@@ -10,6 +10,13 @@ from django.views import View
 from .models import *
 from .forms import *
 from django.contrib import messages
+from email.mime import audio
+#YouTube Search Library
+from youtubesearchpython import VideosSearch
+# For APIs
+import requests
+# Wikipedia API
+import wikipedia
 
 class RegistrationView(SuccessMessageMixin, FormView):
     template_name = 'register.html'
