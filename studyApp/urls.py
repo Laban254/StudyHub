@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import HomeView, RegistrationView
+from .views import HomeView, RegistrationView, notes, delete_note, NotesDetailView
 
 app_name = 'studyApp'
 
@@ -17,4 +17,11 @@ urlpatterns = [
         template_name='password_reset_form.html'), name='password_reset_confirm'),
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(
         template_name='password_reset_done.html'), name='password_reset_complete'),
+    
+     path('notes/', notes, name="notes"),
+    # this path takes one to a specific note and delete's it
+    path('delete_note/<int:pk>/', delete_note, name="delete_note"),
+    # this path references a generic view hence '.as_view'
+    path('notes_view/<int:pk>/', NotesDetailView.as_view(), name="notes_detail"),
+    
 ]

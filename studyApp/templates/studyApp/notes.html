@@ -1,0 +1,47 @@
+{% extends 'base.html' %} 
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        {% for note in notes %}
+        <div class="col-md-3 g-0">
+            <!-- This url leads to the details of a specific note -->
+            <a href="{% url 'studyApp:notes_detail' note.id %}">
+                <div class="card">
+                    <div class="card-header">{{note.title}}</div>
+                    <!-- The slice:"0:100" will only show the first 100 characters of the description -->
+                    <div class="card-body">{{note.description|slice:"0:100"}}</div>
+                    <div class="card-footer mt-auto ">
+                        <!-- This url serves the delete_note view in reference to the specified note.id -->
+                        <a href="{% url 'studyApp:delete_note' note.id %}">
+                            <i class="fa fa-trash fa-2x"></i>
+                        </a>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+
+        <br><br>
+
+    </div>
+</div>
+<br><br>
+<div class="container">
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Create Notes</legend>
+        </fieldset>
+        {{ form | crispy }}
+        <div class="form-group">
+            <button href="" class="btn btn-outline-info" type="submit">
+                Create
+            </button>
+        </div>
+    </form>
+</div>
+
+{% endblock content %}
