@@ -176,3 +176,179 @@ def update_todo(request, pk):
 def delete_todo(request, pk):
     todo.objects.get(id=pk).delete()
     return redirect('todo')
+
+
+#BOOKS
+@login_required
+def books(request):
+    form = BookSearchForm()
+    if request.method == 'POST':
+        form = BookSearchForm(request.POST)
+        # text is the field from BookSearchForm where user writes the book they want to search
+        text = request.POST['text']
+        # Url to the googlebooks API
+        url = "https://www.googleapis.com/books/v1/volumes?q="+text
+        # initiates the requests
+        r = requests.get(url)
+        # we get the result(answer) from the requests in json format
+        answer = r.json()
+        result_list = []
+        for i in range(10):
+            result_dict = {
+                'title':answer['items'][i]['volumeInfo']['title'],
+                'subtitle':answer['items'][i]['volumeInfo'].get('subtitle'),
+                'description':answer['items'][i]['volumeInfo'].get('description'),
+                'count':answer['items'][i]['volumeInfo'].get('pageCount'),
+                'categories':answer['items'][i]['volumeInfo'].get('categories'),
+                'rating':answer['items'][i]['volumeInfo'].get('pageRating'),
+                'thumbnail':answer['items'][i]['volumeInfo'].get('imageLinks').get('thumbnail'),
+                'preview':answer['items'][i]['volumeInfo'].get('previewLink'),
+                # 'link':answer['items'][i]['volumeInfo'].get('link')
+            }
+            result_list.append(result_dict)
+            context = {
+                'form':form,
+                'result_list':result_list
+            }
+        return render(request, 'masomoyangu/books.html',  context)
+    else:
+        form = BookSearchForm()
+    context = {
+        'form':form,
+    }
+    return render(request, 'masomoyangu/books.html',  context)
+
+# DICTIONARY
+@login_required
+def dictionary(request):
+    form = DictionarySearchForm()
+    if request.method == 'POST':
+        form = DictionarySearchForm(request.POST)
+        # text is the field from DictionarySearchForm where user writes the book they want to search
+        text = request.POST['text']
+        # Url to the Wikipedia API
+        url = "https://api.dictionaryapi.dev/api/v2/entries/en_US/"+text
+        # initiates the requests
+        r = requests.get(url)
+        # we get the result(answer) from the requests in json format
+        answer = r.json()
+        try:
+            phonetics = answer[0]['phonetics'][0]['text']
+            audio = answer[0]['phonetics'][0]['audio']
+            definition = answer[0]['meanings'][0]['definitions'][0]['definition']
+            example = answer[0]['meanings'][0]['definitions'][0]['example']
+            synonyms = answer[0]['meanings'][0]['definitions'][0]['synonyms']
+            context = {
+                'form':form,
+                'input':text,
+                'phonetics':phonetics,
+                'audio':audio,
+                'definition':definition,
+                'example':example,
+                'synonyms':synonyms
+            }
+
+        except:
+            context = {
+                'form':form,
+                'input':''
+            }
+        return render(request, 'masomoyangu/dictionary.html', context)
+    else:
+        form = DictionarySearchForm() 
+        context = {
+            'form':form,
+        }
+    return render(request, 'masomoyangu/dictionary.html', context)
+
+# WIKI
+@login_required
+def wiki(request):
+    form = WikiSearchForm()
+    if request.method =='POST':
+         # text is the field from DictionarySearchForm where user writes the book they want to search
+        text = request.POST['text']
+        form = WikiSearchForm(request.POST)
+        # search variable reps the wikipedia page our text looks into
+        search = wikipedia.page(text)
+        context = {
+            'form':form,
+            'title':search.title,
+            'link':search.url,
+            'details':search.summary
+        }
+        return render(request, 'masomoyangu/wiki.html', context)
+    else:
+        form = WikiSearchForm()
+        context = {
+            'form':form
+        }
+    return render(request, 'masomoyangu/wiki.html', context)
+
+# CONVERSION
+@login_required
+def conversion(request):
+    if request.method == 'POST':
+        # Form to choose either Length or Mass
+        form = ConversionForm(request.POST)
+        # when the measurement field choice is length
+        if request.POST['measurement'] == 'length':
+            # name of form
+            measurement_form = ConversionLengthForm()
+            context = {
+                'form':form,
+                'measurement_form':measurement_form,
+                'input':True
+            }
+            # if there is a number inputed in the form
+            if 'input' in request.POST:
+                input = request.POST['input']
+                first = request.POST['measure1']
+                second = request.POST['measure2']
+                # answer is an empty string at first
+                answer = ''
+                # if an integer input has been entered and is greater than 0
+                if input and int(input) >= 0:
+                    if first =='yard' and second == 'foot':
+                        answer = f"{input} yard = {int(input)*3} foot"
+                    if first == 'foot' and second == 'yard':
+                        answer = f"{input} foot = {int(input)/3} yard"
+                context ={
+                    'form':form,
+                    'measurement_form':measurement_form,
+                    'input':True,
+                    'answer':answer
+                }
+        # when the measurement field choice is mass
+        if request.POST['measurement'] == 'mass':
+            measurement_form = ConversionMassForm()
+            context = {
+                'form':form,
+                'measurement_form':measurement_form,
+                'input':True
+            }
+            # if a  number is entered in the form
+            if 'input' in request.POST:
+                input = request.POST['input']
+                first = request.POST['measure1']
+                second = request.POST['measure2']
+                answer = ''
+                if input and int(input) >= 0:
+                    if first =='pound' and second == 'kilogram':
+                        answer = f"{input} pound = {int(input)*0.453592} kilograms"
+                    if first == 'kilogram' and second == 'pound':
+                        answer = f"{input} kilogram = {int(input)*2.2062} pound"
+                context ={
+                    'form':form,
+                    'measurement_form':measurement_form,
+                    'input':True,
+                    'answer':answer
+                }
+    else:            
+        form = ConversionForm()
+        context = {
+            'form':form,
+            # initially input is set to false
+            'input':False
+        }
+    return render(request, 'masomoyangu/conversion.html', context)
