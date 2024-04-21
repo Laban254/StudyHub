@@ -210,13 +210,13 @@ def books(request):
                 'form':form,
                 'result_list':result_list
             }
-        return render(request, 'masomoyangu/books.html',  context)
+        return render(request, 'books.html',  context)
     else:
         form = BookSearchForm()
     context = {
         'form':form,
     }
-    return render(request, 'masomoyangu/books.html',  context)
+    return render(request, 'books.html',  context)
 
 # DICTIONARY
 @login_required
@@ -253,13 +253,13 @@ def dictionary(request):
                 'form':form,
                 'input':''
             }
-        return render(request, 'masomoyangu/dictionary.html', context)
+        return render(request, 'dictionary.html', context)
     else:
         form = DictionarySearchForm() 
         context = {
             'form':form,
         }
-    return render(request, 'masomoyangu/dictionary.html', context)
+    return render(request, 'dictionary.html', context)
 
 # WIKI
 @login_required
@@ -277,13 +277,13 @@ def wiki(request):
             'link':search.url,
             'details':search.summary
         }
-        return render(request, 'masomoyangu/wiki.html', context)
+        return render(request, 'wiki.html', context)
     else:
         form = WikiSearchForm()
         context = {
             'form':form
         }
-    return render(request, 'masomoyangu/wiki.html', context)
+    return render(request, 'wiki.html', context)
 
 # CONVERSION
 @login_required
@@ -351,4 +351,44 @@ def conversion(request):
             # initially input is set to false
             'input':False
         }
-    return render(request, 'masomoyangu/conversion.html', context)
+    return render(request, 'conversion.html', context)
+
+
+# YOUTUBE
+@login_required
+def youtube(request):
+    if request.method == 'POST':
+        form = YoutubeSearchForm(request.POST)
+        # text is the field from YoutubeSearchForm
+        text = request.POST['text']
+        # VideosSearch is a module from youtube-search-python
+        video = VideosSearch(text, limit=255)
+        result_list = []
+        for i in video.result()['result']:
+            result_dict = {
+                'input':text,
+                'title':i['title'],
+                'duration':i['duration'],
+                'thumbnail':i['thumbnails'][0]['url'],
+                'channel':i['channel']['name'],
+                'link':i['link'],
+                'views':i['viewCount']['short'],
+                'published':i['publishedTime']
+            }
+            desc = ''
+            if i['descriptionSnippet']:
+                for j in i['descriptionSnippet']:
+                    desc += j['text']
+            result_dict['description'] = desc
+            result_list.append(result_dict)
+            context={
+                'form':form,
+                'results':result_list
+            }
+        return render(request, 'youtube.html', context)
+    else:
+        form = YoutubeSearchForm()
+    context = {
+        'form':form,
+    }
+    return render(request, 'youtube.html', context)
