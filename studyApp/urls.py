@@ -41,9 +41,9 @@ urlpatterns = [
 
     path('dictionary/', dictionary, name='dictionary'),
 
-    path('wiki/', wiki, name='wiki'),
+   
 
-    path('conversion/', conversion, name="conversion"),
+    
 
     
 ]

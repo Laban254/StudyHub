@@ -32,3 +32,13 @@ class TodoForm(forms.ModelForm):
         model = Todo
         fields = ['title', 'is_finished']
 
+class YoutubeSearchForm(forms.Form):
+    text = forms.CharField(max_length=255, label="Search youtube video")
+
+
+class BookSearchForm(forms.Form):
+    text = forms.CharField(max_length=255, label="Search for books")
+
+class DictionarySearchForm(forms.Form):
+    text = forms.CharField(max_length=255, label="Search for words")
+
