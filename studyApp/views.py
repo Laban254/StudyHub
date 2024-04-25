@@ -4,24 +4,24 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView
 from .forms import RegistrationForm
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.views import View
 from .models import *
 from .forms import *
 from django.contrib import messages
 from email.mime import audio
-#YouTube Search Library
-from youtubesearchpython import VideosSearch
+from django.core.paginator import Paginator
+
+
 # For APIs
 import requests
-# Wikipedia API
-import wikipedia
+
 
 class RegistrationView(SuccessMessageMixin, FormView):
     template_name = 'register.html'
     form_class = RegistrationForm
-    success_url = reverse_lazy('studyApplogin')
+    success_url = reverse_lazy('studyApp:login')
     success_message = "Account for %(username)s created successfully"
 
     def form_valid(self, form):
@@ -38,36 +38,71 @@ class HomeView(View):
         return render(request, 'home.html')
 
 
-# NOTES
 @login_required
 def notes(request):
     form = NotesForm()
     # Create Notes Form
     if request.method == 'POST':
-        form= NotesForm(request.POST)
+        form = NotesForm(request.POST)
         if form.is_valid():
-            # List out the form fields as POST requests
-            notes = Notes(user=request.user, title=request.POST['title'], description=request.POST['description'])
-            notes.save()
-        messages.success(request, f"Notes added successfully")    
+            # Save the form data
+            form.instance.user = request.user
+            form.save()
+            messages.success(request, "Notes added successfully")    
+            return redirect('studyApp:notes')
     else:
-        form=NotesForm()
-    # The notes will be filtered and displayed based on the current logged in user
-    notes = Notes.objects.filter(user=request.user)
-    context={
-        'form':form,
-        'notes':notes,
+        form = NotesForm()
+
+    # Get all notes for the current user
+    notes_list = Notes.objects.filter(user=request.user)
+
+    # Pagination
+    paginator = Paginator(notes_list, 8)  # 4 notes per page
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'form': form,
+        'page_obj': page_obj,
+        'notes': notes_list,
     }
     return render(request, 'notes.html', context)
+
 
 class NotesDetailView(generic.DetailView):
     model = Notes
 
 @login_required
 def delete_note(request, pk):
-    Notes.objects.get(id=pk).delete()
-    return redirect('notes')
+    note = Notes.objects.get(id=pk)
+    # Check if the note belongs to the current user before deleting
+    if note.user == request.user:
+        note.delete()
+        messages.success(request, "Note deleted successfully")
+    else:
+        messages.error(request, "You are not authorized to delete this note")
+    return redirect('studyApp:notes')
 
+@login_required
+def edit_note(request, pk):
+    note = get_object_or_404(Notes, id=pk)
+    if note.user != request.user:
+        messages.error(request, "You are not authorized to edit this note")
+        return redirect('studyApp:notes')
+
+    form = NotesForm(instance=note)
+    if request.method == 'POST':
+        form = NotesForm(request.POST, instance=note)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Note updated successfully")
+            return redirect('studyApp:notes')
+
+    context = {
+        'form': form,
+        'note': note,
+    }
+    return render(request, 'edit_note.html', context)
 
 # HOMEWORK
 @login_required

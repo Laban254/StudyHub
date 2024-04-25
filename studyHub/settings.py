@@ -76,7 +76,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'studyHub.wsgi.application'
 
 
-LOGIN_REDIRECT_URL = 'studyApp:home'
+LOGIN_URL = '/studyApp/login/'
+
+LOGIN_REDIRECT_URL = '/studyApp/notes/'
 
 STATIC_URL = '/static/'
 

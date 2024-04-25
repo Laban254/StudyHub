@@ -5,7 +5,6 @@ from .views import *
 app_name = 'studyApp'
 
 urlpatterns = [
-    path('', HomeView.as_view(), name='home'),
     path('registration/', RegistrationView.as_view(), name='registration'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
@@ -19,6 +18,7 @@ urlpatterns = [
         template_name='password_reset_done.html'), name='password_reset_complete'),
     
      path('notes/', notes, name="notes"),
+     path('edit-note/<int:pk>/', edit_note, name='edit_note'),
     # this path takes one to a specific note and delete's it
     path('delete_note/<int:pk>/', delete_note, name="delete_note"),
     # this path references a generic view hence '.as_view'
@@ -42,8 +42,5 @@ urlpatterns = [
     path('dictionary/', dictionary, name='dictionary'),
 
    
-
-    
-
     
 ]

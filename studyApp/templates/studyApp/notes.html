@@ -4,44 +4,91 @@
 {% block content %}
 
 <div class="container">
-    <div class="row">
-        {% for note in notes %}
-        <div class="col-md-3 g-0">
-            <!-- This url leads to the details of a specific note -->
-            <a href="{% url 'studyApp:notes_detail' note.id %}">
-                <div class="card">
-                    <div class="card-header">{{note.title}}</div>
-                    <!-- The slice:"0:100" will only show the first 100 characters of the description -->
-                    <div class="card-body">{{note.description|slice:"0:100"}}</div>
-                    <div class="card-footer mt-auto ">
-                        <!-- This url serves the delete_note view in reference to the specified note.id -->
-                        <a href="{% url 'studyApp:delete_note' note.id %}">
-                            <i class="fa fa-trash fa-2x"></i>
-                        </a>
-                    </div>
-                </div>
-            </a>
-        </div>
-        {% endfor %}
-
-        <br><br>
-
+    <!-- Button to trigger the modal -->
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createNotesModal">
+            Create Notes
+        </button>
     </div>
-</div>
-<br><br>
-<div class="container">
-    <form method="POST">
-        {% csrf_token %}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Create Notes</legend>
-        </fieldset>
-        {{ form | crispy }}
-        <div class="form-group">
-            <button href="" class="btn btn-outline-info" type="submit">
-                Create
-            </button>
+
+    <br>
+    <!-- Modal -->
+    <div class="modal fade" id="createNotesModal" tabindex="-1" role="dialog" aria-labelledby="createNotesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createNotesModalLabel">Create Notes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        {{ form | crispy }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </form>
+    </div>
+    
+    <!-- Displaying Notes -->
+    <div class="row">
+        {% for note in page_obj %}
+            <div class="col-md-3 g-0">
+                <!-- This url leads to the details of a specific note -->
+                <a href="{% url 'studyApp:notes_detail' note.id %}">
+                    <div class="card">
+                        <div class="card-header text-center">{{note.title}}</div>
+                        <!-- The slice:"0:100" will only show the first 100 characters of the description -->
+                        <div class="card-body">{{note.description|slice:"0:80"}}</div>
+                        <div class="card-footer mt-auto ">
+                            <!-- This url serves the delete_note view in reference to the specified note.id -->
+                            <a href="{% url 'studyApp:edit_note' note.id %}">
+                                <i class="fa fa-edit fa-1x"></i>
+                            </a>
+                            <a href="{% url 'studyApp:delete_note' note.id %}">
+                                <i class="fa fa-trash fa-1x"></i>
+                            </a>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination links -->
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">&laquo;</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item active">
+                    <span class="page-link">{{ page_obj.number }}</span>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
 </div>
 
 {% endblock content %}
