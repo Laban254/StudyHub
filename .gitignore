@@ -1,4 +1,4 @@
-studyportal/
+
 .env
 excess.txt/
 # Created by https://www.toptal.com/developers/gitignore/api/python,django,intellij,pycharm
@@ -127,6 +127,7 @@ celerybeat.pid
 .ENV/
 env.bak/
 venv.bak/
+envstudyhub
 
 # Spyder project settings
 .spyderproject
