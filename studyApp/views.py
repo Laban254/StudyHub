@@ -157,12 +157,12 @@ def update_homework(request, pk=None):
     else:
         homework.is_finished = True
     homework.save()
-    return redirect('homework')
+    return redirect('studyApp:homework')
 
 @login_required
 def delete_homework(request, pk):
     Homework.objects.get(id=pk).delete()
-    return redirect('homework')
+    return redirect('studyApp:homework')
 
 
 #TODO
@@ -213,12 +213,13 @@ def update_todo(request, pk):
     else:
         todo.is_finished = True
     todo.save()
-    return redirect('todo')
+    return redirect('studyApp:todo')
 
 def delete_todo(request, pk):
-    todo.objects.get(id=pk).delete()
-    return redirect('todo')
-
+    # Use the correct model name and access its objects
+    todo_instance = get_object_or_404(Todo, id=pk)
+    todo_instance.delete()
+    return redirect('studyApp:todo')
 
 #BOOKS
 @login_required

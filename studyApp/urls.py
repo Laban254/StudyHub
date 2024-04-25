@@ -33,9 +33,7 @@ urlpatterns = [
     path('update_todo/<int:pk>', update_todo, name="update_todo"),
     path('delete_todo/<int:pk>/', delete_todo, name="delete_todo"),
 
-    path('todo/', todo, name="todo"),
-    path('update_todo/<int:pk>', update_todo, name="update_todo"),
-    path('delete_todo/<int:pk>/', delete_todo, name="delete_todo"),
+
 
     path('books/', books, name="books"),
 
