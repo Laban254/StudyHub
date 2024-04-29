@@ -1,18 +1,26 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
 {% block content %}
-<div class="container-fluid">
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-lg-8"> <!-- Adjusted width for larger screens -->
             <div class="card">
-                <div class="card-header">
-                    <h2 class="text-center">Edit Note</h2>
+                <div class="card-header bg-dark">
+                    <h2 class="text-center mb-0 text-white">Edit Note</h2>
                 </div>
                 <div class="card-body">
-                    <form method="post" class="form">
+                    <form method="post" class="needs-validation" novalidate>
                         {% csrf_token %}
-                        {{ form | crispy }}
-                        <button type="submit" class="btn btn-primary mt-3">Update</button>
+                        <div class="form-group">
+                            <label for="{{ form.title.id_for_label }}">Title:</label>
+                            <input type="text" class="form-control" id="{{ form.title.id_for_label }}" name="{{ form.title.name }}" value="{{ form.title.value }}" style="width: 100%;" required>
+                            <div class="invalid-feedback">{{ form.title.errors }}</div> <!-- Display errors if any -->
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.description.id_for_label }}">Description:</label>
+                            <textarea class="form-control" id="{{ form.description.id_for_label }}" name="{{ form.description.name }}" style="width: 100%;" rows="5" required>{{ form.description.value }}</textarea>
+                            <div class="invalid-feedback">{{ form.description.errors }}</div> <!-- Display errors if any -->
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block mt-3">Update</button> <!-- Full-width button -->
                     </form>
                 </div>
             </div>
@@ -20,3 +28,8 @@
     </div>
 </div>
 {% endblock %}
+
+
+
+
+

@@ -2,25 +2,21 @@
 {% load static %} 
 {% block content %}
 
-<section class='text-center container'>
-
-    <div class="container">
-
-        <div class="content-section p-0 mt-5">
-
-            <div class="m-3">
-                <h2>{{notes.title}}</h2>
-            </div>
-
-            <hr class="p-0 m-0">
-            <p class="description m-5 p-5">
-                {{notes.description}}
-            </p>
-            <hr>
+<section class="container text-center">
+    <div class="content-section p-0 mt-5">
+        <div class="m-3">
+            <h2 class="fw-bold">{{ notes.title }}</h2>
         </div>
 
-    </div>
+        <hr class="my-0">
 
+        <div class="description p-4">
+            <p class="lead">{{ notes.description }}</p>
+        </div>
+
+        <hr class="my-0">
+    </div>
 </section>
+
 
 {% endblock content %}

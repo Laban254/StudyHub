@@ -57,7 +57,7 @@ def notes(request):
     notes_list = Notes.objects.filter(user=request.user)
 
     # Pagination
-    paginator = Paginator(notes_list, 8)  # 4 notes per page
+    paginator = Paginator(notes_list, 9)  
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 

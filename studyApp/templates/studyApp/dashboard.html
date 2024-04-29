@@ -1,0 +1,159 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<style>
+  .container {
+    height: 100%;
+    overflow: hidden;
+  }
+  .card {
+    border: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff; /* White background color */
+    height: calc(100% - 40px); /* Height of the card */
+    margin-bottom: 20px; /* Adjust margin between cards */
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+  }
+  .card-img-top {
+    border-radius: 10px 10px 0 0;
+    height: 200px;
+    object-fit: cover;
+  }
+  .card-body {
+    padding: 20px;
+  }
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+  }
+  .card-text {
+    font-size: 1rem;
+    color: #666;
+  }
+</style>
+
+<section class="container text-center">
+  <div class="container text-center">
+  <h2 class="display-5">Welcome, <strong>{{request.user.username }}</strong></h2>
+  <hr>
+</div>
+
+  <div class="my-3 justify-content-start">
+    <h4 class="lead m-0 p-0">Studies' Essentials</h4>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+      <a href="{% url 'studyApp:notes' %}" class="text-decoration-none">
+        <div class="card">
+          <img
+            src="{% static 'images/notes.webp' %}"
+            class="card-img-top"
+            alt="Notes image"
+          />
+          <div class="card-body">
+            <h5 class="card-title">Notes</h5>
+            <p class="card-text">
+              Create Notes to refer them later. They are stored permanently
+              until deleted.
+            </p>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col">
+      <a href="{% url 'studyApp:homework' %}" class="text-decoration-none">
+        <div class="card">
+          <img
+            src="{% static 'images/homework1.jpg' %}"
+            class="card-img-top"
+            alt="Homework image"
+          />
+          <div class="card-body">
+            <h5 class="card-title">Homework</h5>
+            <p class="card-text">
+              Add homeworks and assign them deadlines. They will be displayed
+              prioritised by deadlines.
+            </p>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col">
+      <a href="{% url 'studyApp:todo' %}" class="text-decoration-none">
+        <div class="card">
+          <img
+            src="{% static 'images/todo.webp' %}"
+            class="card-img-top"
+            alt="Todo image"
+          />
+          <div class="card-body">
+            <h5 class="card-title">To Do</h5>
+            <p class="card-text">
+              Add your to-do lists for your day and remove them as you finish.
+            </p>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="my-3 justify-content-start">
+    <h4 class="lead m-0 p-0">Studies' References</h4>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+      <a href="{% url 'studyApp:books' %}" class="text-decoration-none">
+        <div class="card">
+          <img
+            src="{% static 'images/books1.jpg' %}"
+            class="card-img-top"
+            alt="Books image"
+          />
+          <div class="card-body">
+            <h5 class="card-title">Books</h5>
+            <p class="card-text">
+              Browse books from a list of neatly organised book menu.
+            </p>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col">
+      <a href="{% url 'studyApp:dictionary' %}" class="text-decoration-none">
+        <div class="card">
+          <img
+            src="{% static 'images/dictionary2.jpg' %}"
+            class="card-img-top"
+            alt="Dictionary image"
+          />
+          <div class="card-body">
+            <h5 class="card-title">Dictionary</h5>
+            <p class="card-text">
+              A vocabulary from a book is troubling you? No problem, enter the
+              word, and the meaning will be displayed almost instantaneously.
+            </p>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+<footer class="footer mt-auto py-1 bg-dark">
+  <div class="container text-center">
+    <span class="text-muted">
+      @StudyHub Developed with <i class="bi bi-heart-fill text-danger"></i> by
+      Kibe
+    </span>
+  </div>
+</footer>
+
+{% endblock content %}
