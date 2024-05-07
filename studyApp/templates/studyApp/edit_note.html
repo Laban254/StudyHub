@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
+ <!-- django-quill-editor Media -->
+{% include 'django_quill/media.html' %}
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-lg-8"> <!-- Adjusted width for larger screens -->
+        <div class="col-lg-12"> <!-- Adjusted width for larger screens -->
             <div class="card">
                 <div class="card-header bg-dark">
                     <h2 class="text-center mb-0 text-white">Edit Note</h2>
@@ -17,10 +19,9 @@
                         </div>
                         <div class="form-group">
                             <label for="{{ form.description.id_for_label }}">Description:</label>
-                            <textarea class="form-control" id="{{ form.description.id_for_label }}" name="{{ form.description.name }}" style="width: 100%;" rows="5" required>{{ form.description.value }}</textarea>
-                            <div class="invalid-feedback">{{ form.description.errors }}</div> <!-- Display errors if any -->
+                            {{ form.description }}
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block mt-3">Update</button> <!-- Full-width button -->
+                        <button type="submit" class="btn btn-success btn-block mt-3">Update</button> <!-- Full-width button -->
                     </form>
                 </div>
             </div>
@@ -29,7 +30,28 @@
 </div>
 {% endblock %}
 
+<style>
+    /* Custom CSS */
+.modal-content {
+    border-radius: 10px;
+}
 
+.modal-body input[type="text"],
+.modal-body textarea {
+    border-radius: 5px;
+    font-size: 16px;
+    padding: 10px;
+    border: 1px solid #ced4da;
+}
 
+.modal-body input[type="text"]:focus,
+.modal-body textarea:focus {
+    border-color: #4ade80;
+    box-shadow: 0 0 0 0.2rem rgba(74, 222, 128, 0.25);
+}
 
-
+.modal-body input[type="text"],
+.modal-body textarea {
+    width: 100%; /* Adjust the width as needed */
+}
+</style>

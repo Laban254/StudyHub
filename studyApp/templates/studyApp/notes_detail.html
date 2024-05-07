@@ -3,20 +3,31 @@
 {% block content %}
 
 <section class="container text-center">
-    <div class="content-section p-0 mt-5">
+    <div class="content-section p-4 mt-5">
         <div class="m-3">
-            <h2 class="fw-bold">{{ notes.title }}</h2>
+            <h2 class="fw-bold text-primary display-4">{{ notes.title }}</h2>
         </div>
 
-        <hr class="my-0">
+        <hr class="my-4">
 
-        <div class="description p-4">
-            <p class="lead">{{ notes.description }}</p>
+        <div class="description px-5">
+            <p class="lead text-muted">{{ notes.description.html | safe }}</p>
         </div>
 
-        <hr class="my-0">
+        <hr class="my-4">
     </div>
 </section>
 
+<style>
+    .content-section {
+        background-color: #f8f9fa;
+        border-radius: 15px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    }
+    .description {
+        line-height: 1.8;
+        font-size: 1.1rem;
+    }
+</style>
 
 {% endblock content %}

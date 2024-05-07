@@ -13,7 +13,7 @@ from django.contrib import messages
 from email.mime import audio
 from django.core.paginator import Paginator
 
-
+import sweetify
 # For APIs
 import requests
 
@@ -47,7 +47,7 @@ def notes(request):
             # Save the form data
             form.instance.user = request.user
             form.save()
-            messages.success(request, "Notes added successfully")    
+            sweetify.success(request, "Notes added successfully")    
             return redirect('studyApp:notes')
     else:
         form = NotesForm()
@@ -56,7 +56,7 @@ def notes(request):
     notes_list = Notes.objects.filter(user=request.user)
 
     # Pagination
-    paginator = Paginator(notes_list, 9)  
+    paginator = Paginator(notes_list, 12)  
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
@@ -76,31 +76,33 @@ def delete_note(request, pk):
     # Check if the note belongs to the current user before deleting
     if note.user == request.user:
         note.delete()
-        messages.success(request, "Note deleted successfully")
+        sweetify.success(request, "Note deleted successfully", button='OK')
+        # sweetify.toast(request, 'note deleted successfully')
     else:
-        messages.error(request, "You are not authorized to delete this note")
+        sweetify.error(request, "You are not authorized to delete this note")
     return redirect('studyApp:notes')
 
 @login_required
 def edit_note(request, pk):
     note = get_object_or_404(Notes, id=pk)
     if note.user != request.user:
-        messages.error(request, "You are not authorized to edit this note")
         return redirect('studyApp:notes')
 
-    form = NotesForm(instance=note)
     if request.method == 'POST':
         form = NotesForm(request.POST, instance=note)
         if form.is_valid():
             form.save()
-            messages.success(request, "Note updated successfully")
+            sweetify.success(request, "Note updated successfully")
             return redirect('studyApp:notes')
+    else:
+        form = NotesForm(instance=note)
 
     context = {
         'form': form,
         'note': note,
     }
     return render(request, 'edit_note.html', context)
+
 
 # HOMEWORK
 @login_required
