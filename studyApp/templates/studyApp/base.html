@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 {% load static %}
 
 <html lang="en">
@@ -8,6 +9,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Study Hub</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    
     
     <link
       rel="stylesheet"
@@ -25,8 +29,7 @@
       integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
       crossorigin="anonymous"
     />
-    <!-- django-quill-editor Media -->
-    {% include 'django_quill/media.html' %}
+   
     <style>
       .card {
         height: 100%; /* Set the height to 100% */
@@ -122,12 +125,10 @@
     </header>
     <br /><br />
     <main>
-      <!--Will create a message alert  -->
-      {% if messages %} {% for msg in messages %}
-      <div class="container">
-        <div class="alert alert-{{msg.tags}}">{{msg}}</div>
-      </div>
-      {% endfor %} {% endif %} {% block content %} {% endblock content %}
+    {% load sweetify %}
+{% sweetify %}
+{% block content %} {% endblock content %}
+{% block pagination_block %} {% endblock pagination_block %} 
       
     </main>
     <script>
@@ -136,6 +137,7 @@
 
       initMDB({ Ripple });
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
