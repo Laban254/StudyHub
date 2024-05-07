@@ -104,66 +104,49 @@ def edit_note(request, pk):
     return render(request, 'edit_note.html', context)
 
 
-# HOMEWORK
 @login_required
 def homework(request):
     if request.method == 'POST':
-        form= HomeworkForm(request.POST)
+        form = HomeworkForm(request.POST)
         if form.is_valid():
-            try:
-                finished = request.POST['is_finished']
-                # If the checkbox has been clicked
-                if finished == 'on':
-                    finished = True
-                # if the checkbox has not been clicked
-                else:
-                    finished = False
-            except:
-                finished = False
-            # List all the form fields as POST requests
-            homeworks = Homework(
-                user = request.user,
-                subject = request.POST['subject'],
-                title = request.POST['title'],
-                description = request.POST['description'],
-                due = request.POST['due'],
-                is_finished = finished
-            )
-            homeworks.save()
-        messages.success(request, f"Homework added successfully")
+            homework = form.save(commit=False)
+            homework.user = request.user
+            homework.save()
+            sweetify.success(request, "Homework added successfully")
+            return redirect('studyApp:homework')
+        else:
+            sweetify.error(request, "Failed to add homework", text=form.errors.as_text())
     else:
         form = HomeworkForm()
 
     homeworks = Homework.objects.filter(user=request.user)
-    # if the number of homework objects is 0 then it means they are completed
-    if len(homeworks) == 0:
-        homework_done = True
-    # if the number of homeworks is 1 or more then they are incomplete
-    else:
-        homework_done = False
+    homework_done = not homeworks.exists()  # Check if homeworks are completed
     context = {
-        'homeworks':homeworks,
-        'homework_done':homework_done,
-        'form':form,
+        'homeworks': homeworks,
+        'homework_done': homework_done,
+        'form': form,
     }
     return render(request, 'homework.html', context)
 
+
+class HomeworkDetailView(generic.DetailView):
+    model = Homework
+
+
 @login_required
 def update_homework(request, pk=None):
-    homework = Homework.objects.get(id=pk)
-    # if the status checkbox is ticked then changed then the assignment is completed
-    if homework.is_finished == True:
-        homework.is_finished = False
-    else:
-        homework.is_finished = True
+    homework = get_object_or_404(Homework, id=pk)
+    homework.is_finished = not homework.is_finished
     homework.save()
+    sweetify.success(request, "Homework updated successfully")
     return redirect('studyApp:homework')
 
 @login_required
 def delete_homework(request, pk):
-    Homework.objects.get(id=pk).delete()
+    homework = get_object_or_404(Homework, id=pk)
+    homework.delete()
+    sweetify.success(request, "Homework deleted successfully")
     return redirect('studyApp:homework')
-
 
 #TODO
 @login_required

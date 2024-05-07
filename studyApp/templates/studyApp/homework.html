@@ -1,93 +1,257 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
+<!-- django-quill-editor Media -->
+{% include 'django_quill/media.html' %}
+
+<style>
+    /* Variables for easy theming */
+    :root {
+        --primary-color: #007bff;
+        --secondary-color: #6c757d;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --dark-color: #343a40;
+        --light-color: #f8f9fa;
+    }
+
+    /* Global styles */
+    body {
+        background-color: var(--light-color);
+        color: var(--dark-color);
+        font-family: 'Arial', sans-serif;
+    }
+
+    /* Container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px 15px;
+    }
+
+    /* Button */
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+    /* Cards */
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Modal */
+    .modal-content {
+        border-radius: 10px;
+    }
+
+    .modal-body input[type="text"],
+    .modal-body textarea {
+        border-radius: 5px;
+        font-size: 16px;
+        padding: 10px;
+        border: 1px solid var(--secondary-color);
+        width: 100%;
+    }
+
+    .modal-body input[type="text"]:focus,
+    .modal-body textarea:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    /* Homework item */
+    .homework-item {
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        background-color: var(--light-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .homework-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .homework-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: var(--dark-color);
+    }
+
+    .homework-description {
+        font-size: 16px;
+        color: var(--secondary-color);
+        margin-bottom: 10px;
+    }
+
+    .homework-status {
+        font-size: 14px;
+        color: var(--dark-color);
+        padding: 6px 12px;
+        border-radius: 20px;
+    }
+
+    /* Edit and delete buttons */
+    .edit-delete-buttons {
+        display: flex;
+        align-items: center;
+    }
+
+    .edit-delete-buttons button {
+        margin-left: 10px;
+    }
+</style>
 
 <div class="container">
-    <!-- Button to trigger the modal -->
+
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    <button type="button" class="btn btn-primary mt-5" data-toggle="modal" data-target="#createHomeworkModal">
-        Create Homework
-    </button>
+        <button type="button" class="btn btn-sm btn-primary btn-rounded" data-toggle="modal" data-target="#createHomeworkModal">
+            <i class="fas fa-plus me-1"></i> Create Homework
+        </button>
     </div>
-    <br>
 
-<!-- Modal -->
-<div class="modal fade" id="createHomeworkModal" tabindex="-1" role="dialog" aria-labelledby="createHomeworkModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createHomeworkModalLabel">Create Homework</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <div class="modal fade" id="createHomeworkModal" tabindex="-1" role="dialog" aria-labelledby="createHomeworkModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title" id="createHomeworkModalLabel">Create Homework</h5>
+                    <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        {{ form.non_field_errors }}
+                        <div class="mb-3">
+                            <label for="id_subject" class="form-label">Subject</label>
+                            {{ form.subject }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_title" class="form-label">Title</label>
+                            {{ form.title }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_description" class="form-label">Description</label>
+                            {{ form.description }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_due" class="form-label">Due Date</label>
+                            {{ form.due }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_is_finished" class="form-label">Status</label>
+                            {{ form.is_finished }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Create</button>
+                    </div>
+                </form>
             </div>
-            <form method="POST">
-                {% csrf_token %}
-                <div class="modal-body">
-                    <fieldset class="form-group">
-                        <legend class="border-bottom mb-4">Create Homework</legend>
-                        {{ form | crispy }}
-                    </fieldset>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-outline-info">Create</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 
-
-    {% if not homeworks_done %}
-        <div class="table-responsive">
-            <table class="table table-striped table-bordered table-hover">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Subject</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Due</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for homework in homeworks %}
-                        <tr>
-                            <th scope="row">{{ forloop.counter }}</th>
-                            <td>{{ homework.subject }}</td>
-                            <td>{{ homework.title }}</td>
-                            <td>{{ homework.description }}</td>
-                            <td>{{ homework.due }}</td>
-                            <td>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault{{ forloop.counter }}" {% if homework.is_finished %}checked{% endif %}>
-                                    <label class="form-check-label" for="flexCheckDefault{{ forloop.counter }}">
-                                        Mark as Completed
-                                    </label>
-                                </div>
-                            </td>
-                            <td>
-                                <a href="{% url 'studyApp:delete_homework' homework.id %}" class="text-danger">
-                                    <i class="fa fa-trash fa-lg"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% else %}
-        <div class="alert alert-info mt-3" role="alert">
-            All homeworks are completed! Create more to have additional tasks.
-        </div>
-    {% endif %}
-</div>
-
+    <!-- Display homework -->
+    {% if homeworks %}
+        <h2 class="mt-5 mb-4">Your Homework</h2>
 <hr>
+        {% for homework in homeworks %}
+            <div class="homework-item">
+                <div>
+                    <div class="homework-title">
+                        <a href="{%url 'studyApp:homework_detail' homework.id%}">{{ homework.title }}</a>
+                    </div>
+                    <div class="homework-description">{{ homework.subject }}</div>
+                    <div class="homework-status">
+                        {% if homework.is_finished %}
+                            <span class="badge badge-success">Finished</span>
+                        {% else %}
+                            <span class="badge badge-secondary">Not Finished</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="edit-delete-buttons">
+                    <form method="post" action="{% url 'studyApp:delete_homework' homework.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editHomeworkModal{{ homework.id }}">Edit</button>
+                </div>
+            </div>
 
+            <!-- Edit Homework Modal -->
+            <div class="modal fade" id="editHomeworkModal{{ homework.id }}" tabindex="-1" role="dialog" aria-labelledby="editHomeworkModal{{ homework.id }}Label" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editHomeworkModal{{ homework.id }}Label">Edit Homework</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" action="{% url 'studyApp:update_homework' homework.id %}">
+                                {% csrf_token %}
+                                <div class="modal-body">
+                                    {{ form.non_field_errors }}
+                                    <div class="mb-3">
+                                        <label for="id_subject" class="form-label">Subject</label>
+                                        {{ form.subject }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="id_title" class="form-label">Title</label>
+                                        {{ form.title }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="{{ form.description.id_for_label }}">Description:</label>
+                                        {{ form.description }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="id_due" class="form-label">Due Date</label>
+                                        {{ form.due }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="id_is_finished" class="form-label">Status</label>
+                                        {{ form.is_finished }}
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-success">Create</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="mt-5">No homework yet.</p>
+    {% endif %}
+
+    <hr>
+
+</div>
 
 {% endblock content %}

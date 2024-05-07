@@ -24,8 +24,8 @@ class DateInput(forms.DateInput):
 class HomeworkForm(forms.ModelForm):
     class Meta:
         model = Homework
-        widgets = {'due':DateInput()}
         fields = ['subject', 'title', 'description', 'due', 'is_finished']
+        widgets = {'due': forms.DateInput(attrs={'type': 'date'})}
 
 class TodoForm(forms.ModelForm):
     class Meta:
