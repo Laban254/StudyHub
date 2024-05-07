@@ -40,7 +40,6 @@ class HomeView(View):
 
 @login_required
 def notes(request):
-    form = NotesForm()
     # Create Notes Form
     if request.method == 'POST':
         form = NotesForm(request.POST)
@@ -64,7 +63,6 @@ def notes(request):
     context = {
         'form': form,
         'page_obj': page_obj,
-        'notes': notes_list,
     }
     return render(request, 'notes.html', context)
 

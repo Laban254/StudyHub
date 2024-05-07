@@ -5,6 +5,7 @@ from dataclasses import fields
 from .models import *
 from django.forms import widgets
 
+
 class RegistrationForm(UserCreationForm):
     class Meta:
         model = User
@@ -15,7 +16,6 @@ class NotesForm(forms.ModelForm):
     class Meta:
         model = Notes
         fields = ['title', 'description']
-
 
 # This is a class of DateInput to show a widget of a calender when adding dates in a form
 class DateInput(forms.DateInput):
