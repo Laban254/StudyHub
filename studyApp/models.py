@@ -8,6 +8,9 @@ class Notes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = QuillField()
+    # completed_at = models.DateTimeField(help_text="None if the note isn't completed. Contain datetime when the note was completed", blank=True, null=True, default=None)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title

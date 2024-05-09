@@ -38,6 +38,8 @@ class HomeView(View):
         return render(request, 'home.html')
 
 
+from django.db.models import Q
+
 @login_required
 def notes(request):
     # Create Notes Form
@@ -55,6 +57,13 @@ def notes(request):
     # Get all notes for the current user
     notes_list = Notes.objects.filter(user=request.user)
 
+    # Filter notes based on search query
+    query = request.GET.get('q')
+    if query:
+        notes_list = notes_list.filter(
+            Q(title__icontains=query) | Q(description__icontains=query)
+        )
+
     # Pagination
     paginator = Paginator(notes_list, 12)  
     page_number = request.GET.get('page', 1)
@@ -63,6 +72,7 @@ def notes(request):
     context = {
         'form': form,
         'page_obj': page_obj,
+        'total_notes_count': notes_list.count(),  # Count of filtered notes
     }
     return render(request, 'notes.html', context)
 
@@ -102,6 +112,9 @@ def edit_note(request, pk):
         'note': note,
     }
     return render(request, 'edit_note.html', context)
+
+
+
 
 
 @login_required
