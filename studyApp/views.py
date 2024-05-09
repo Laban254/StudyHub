@@ -133,10 +133,10 @@ def homework(request):
         form = HomeworkForm()
 
     homeworks = Homework.objects.filter(user=request.user)
-    homework_done = not homeworks.exists()  # Check if homeworks are completed
+    unfinished_homeworks = homeworks.filter(is_finished=False)  # Filter unfinished homeworks
     context = {
         'homeworks': homeworks,
-        'homework_done': homework_done,
+        'unfinished_homeworks': unfinished_homeworks,  # Pass unfinished homeworks to the template
         'form': form,
     }
     return render(request, 'homework.html', context)

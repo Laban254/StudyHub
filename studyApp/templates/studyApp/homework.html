@@ -74,42 +74,43 @@
         box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     }
 
-    /* Homework item */
     .homework-item {
-        padding: 20px;
-        margin-bottom: 20px;
-        border-radius: 10px;
+        padding: 4px;
+        margin-bottom: 4px;
+        border-radius: 4px;
         background-color: var(--light-color);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
     }
 
     .homework-item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .homework-title {
-        font-size: 20px;
+        font-size: 16px;
         font-weight: bold;
-        margin-bottom: 10px;
+        margin-bottom: 4px;
         color: var(--dark-color);
     }
 
     .homework-description {
-        font-size: 16px;
-        color: var(--secondary-color);
-        margin-bottom: 10px;
+        font-size: 12px;
+        font-weight: bold;
+        color: #333; /* Darker shade of black */
+        margin-bottom: 4px;
     }
 
     .homework-status {
-        font-size: 14px;
-        color: var(--dark-color);
-        padding: 6px 12px;
-        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold; /* Added font weight */
+        color: green; /* Adjusted color for clarity */
+        padding: 2px 4px;
+        border-radius: 8px;
     }
 
     /* Edit and delete buttons */
@@ -119,8 +120,9 @@
     }
 
     .edit-delete-buttons button {
-        margin-left: 10px;
+        margin-left: 4px;
     }
+
 </style>
 
 <div class="container">
@@ -173,14 +175,23 @@
     </div>
 
     <!-- Display homework -->
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="mt-3 mb-3 text-primary fw-bold">Your Homework</h2>
+        </div>
+        <div>
+            <!-- Toggle switch for displaying unfinished homework -->
+            <label for="toggleSwitch">Show Unfinished</label>
+            <input type="checkbox" id="toggleSwitch" onchange="toggleHomeworkVisibility()">
+        </div>
+    </div>
+    <hr>
     {% if homeworks %}
-        <h2 class="mt-5 mb-4">Your Homework</h2>
-<hr>
         {% for homework in homeworks %}
-            <div class="homework-item">
+            <div class="homework-item {% if homework.is_finished %}finished{% endif %}">
                 <div>
                     <div class="homework-title">
-                        <a href="{%url 'studyApp:homework_detail' homework.id%}">{{ homework.title }}</a>
+                        <a href="{% url 'studyApp:homework_detail' homework.id %}">{{ homework.title }}</a>
                     </div>
                     <div class="homework-description">{{ homework.subject }}</div>
                     <div class="homework-status">
@@ -199,6 +210,7 @@
                     <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editHomeworkModal{{ homework.id }}">Edit</button>
                 </div>
             </div>
+        
 
             <!-- Edit Homework Modal -->
             <div class="modal fade" id="editHomeworkModal{{ homework.id }}" tabindex="-1" role="dialog" aria-labelledby="editHomeworkModal{{ homework.id }}Label" aria-hidden="true">
@@ -254,4 +266,22 @@
 
 </div>
 
+<script>
+function toggleHomeworkVisibility() {
+    var checkbox = document.getElementById("toggleSwitch");
+    var finishedHomeworkItems = document.querySelectorAll('.homework-item.finished');
+
+    if (checkbox.checked) {
+        finishedHomeworkItems.forEach(function(item) {
+            item.style.display = 'none';
+        });
+    } else {
+        finishedHomeworkItems.forEach(function(item) {
+            item.style.display = 'flex';
+        });
+    }
+}
+</script>
+
 {% endblock content %}
+
