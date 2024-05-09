@@ -65,7 +65,7 @@
 
 <div class="container py-2">
     <!-- Button to trigger the modal -->
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4">
         <button type="button" class="btn btn-sm btn-primary btn-rounded" data-toggle="modal" data-target="#createNotesModal">
             <i class="fas fa-plus me-1"></i> Create Notes
         </button>
@@ -76,11 +76,12 @@
             <div class="input-group">
                 <h3 class="text-primary">Your Notes&nbsp;</h3>
                 <input type="text" class="form-control rounded-pill" style="width: 400px;" placeholder="Search notes..." name="q" value="{{ request.GET.q }}">
-                <button class="btn btn-outline-primary rounded-pill" type="submit">
+                <button class="btn btn-outline-primary rounded-pill" type="submit" style="margin-left: 10px;">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
         </form>
+
 
         <!-- Display Total Number of Notes -->
         <div class="notes-summary">
