@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- django-quill-editor Media -->
+{% include 'django_quill/media.html' %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-12"> <!-- Increased width for larger card -->
+            <div class="card shadow-lg rounded">
+                <div class="card-header bg-dark text-white">
+                    <h2 class="card-title text-center">Edit Homework</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="{{ form.subject.id_for_label }}" class="form-label">Subject:</label>
+                            <input type="text" id="{{ form.subject.id_for_label }}" name="{{ form.subject.name }}" value="{{ form.subject.value }}" class="form-control-lg form-control" style="width: 100%;" required> <!-- Add class to make it larger -->
+                            <div class="invalid-feedback">{{ form.subject.errors }}</div> <!-- Display errors if any -->
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Title:</label>
+                            <input type="text" id="{{ form.title.id_for_label }}" name="{{ form.title.name }}" value="{{ form.title.value }}" class="form-control-lg form-control" style="width: 100%;" required> <!-- Add class to make it larger -->
+                            <div class="invalid-feedback">{{ form.title.errors }}</div> <!-- Display errors if any -->
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description:</label>
+                            {{ form.description }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.due.id_for_label }}" class="form-label">Due Date:</label>
+                            {{ form.due }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.is_finished.id_for_label }}" class="form-label">Status:</label>
+                            {{ form.is_finished }}
+                        </div>
+                        {% comment %} <div class="d-grid gap-2"> <!-- Use grid layout for buttons -->
+                            <a href="{% url 'studyApp:homework' %}" class="btn btn-secondary btn-lg rounded-pill">Close</a> <!-- Redirect to homepage -->
+                            <button type="submit" class="btn btn-success btn-lg rounded-pill">Update</button>
+                        </div> {% endcomment %}
+                        <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Update</button>
+                        <a href="{% url 'studyApp:homework' %}" class="btn btn-secondary ">Close</a>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
