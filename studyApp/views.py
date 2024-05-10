@@ -148,11 +148,32 @@ class HomeworkDetailView(generic.DetailView):
 
 @login_required
 def update_homework(request, pk=None):
+    # Retrieve the homework object from the database
     homework = get_object_or_404(Homework, id=pk)
-    homework.is_finished = not homework.is_finished
-    homework.save()
-    sweetify.success(request, "Homework updated successfully")
-    return redirect('studyApp:homework')
+
+    # Check if the current user is the owner of the homework
+    if homework.user != request.user:
+        return redirect('studyApp:homework')
+
+    if request.method == 'POST':
+        # Create the form instance with the POST data and the homework instance
+        form = HomeworkForm(request.POST, instance=homework)
+        if form.is_valid():
+            # Save the form to update the homework object
+            form.save()
+            messages.success(request, "Homework updated successfully")
+            return redirect('studyApp:homework')
+        else:
+            messages.error(request, "Failed to update homework. Please correct the errors.")
+    else:
+        # Create the form instance with the homework instance (no POST data)
+        form = HomeworkForm(instance=homework)
+
+    context = {
+        'form': form,
+        'homework': homework,
+    }
+    return render(request, 'update_homework.html', context)
 
 @login_required
 def delete_homework(request, pk):

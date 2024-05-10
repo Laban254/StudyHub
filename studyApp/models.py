@@ -28,6 +28,8 @@ class Homework(models.Model):
     description = QuillField()
     due = models.DateTimeField()
     is_finished = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title

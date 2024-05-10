@@ -21,7 +21,10 @@
                             <label for="{{ form.description.id_for_label }}">Description:</label>
                             {{ form.description }}
                         </div>
-                        <button type="submit" class="btn btn-success btn-block mt-3">Update</button> <!-- Full-width button -->
+                        <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Update</button>
+                        <a href="{% url 'studyApp:notes' %}" class="btn btn-secondary ">Close</a>
+                    </div>
                     </form>
                 </div>
             </div>

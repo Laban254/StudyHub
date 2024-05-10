@@ -26,7 +26,7 @@ urlpatterns = [
 
 
     path('homework/', homework, name="homework"),
-    path('update_homework/<int:pk>', update_homework, name="update_homework"),
+    path('edit_homework/<int:pk>', update_homework, name="edit_homework"),
     path('delete_homework/<int:pk>/', delete_homework, name="delete_homework"),
     path('homework_view/<int:pk>/', HomeworkDetailView.as_view(), name="homework_detail"),
 
