@@ -3,21 +3,17 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<!-- Todo List -->
 <div class="container">
-
-
     <!-- Button to trigger the Create Todo Modal -->
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createTodoModal">
+            Create Todo
+        </button>
+    </div>
 
-<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createTodoModal">
-        Create Todo
-    </button>
-</div>
-<br>
     <!-- Create Todo Modal -->
 <div class="modal fade" id="createTodoModal" tabindex="-1" role="dialog" aria-labelledby="createTodoModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="createTodoModalLabel">Create Todo</h5>
@@ -28,14 +24,18 @@
             <form method="POST">
                 {% csrf_token %}
                 <div class="modal-body">
-                    <fieldset class="form-group">
-                        <legend class="border-bottom mb-4">Create Todo</legend>
-                        {{ form | crispy }}
-                    </fieldset>
+                    <div class="mb-3">
+                        <label for="id_title" class="form-label">Title</label>
+                        {{ form.title }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="is_finished" class="form-label">Completed</label>
+                        {{ form.is_finished }}
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-outline-info">Create</button>
+                    <button type="submit" class="btn btn-success">Create</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </form>
         </div>
@@ -43,17 +43,15 @@
 </div>
 
 
-
-
-    {% if not todos_done %}
-        <div class="table-responsive">
+    {% if todos %}
+        <div class="table-responsive mt-4">
             <table class="table table-striped table-bordered table-hover">
                 <thead class="thead-dark">
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Title</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Delete</th>
+                        <th scope="col">Actions</th> <!-- Changed to 'Actions' for better clarity -->
                     </tr>
                 </thead>
                 <tbody>
@@ -70,8 +68,8 @@
                                 </div>
                             </td>
                             <td>
-                                <a href="{% url 'studyApp:delete_todo' todo.id %}" class="text-danger">
-                                    <i class="fa fa-trash fa-lg"></i>
+                                <a href="{% url 'studyApp:delete_todo' todo.id %}" class="btn btn-danger" role="button">
+                                    Delete <!-- Changed to button for consistency -->
                                 </a>
                             </td>
                         </tr>
@@ -80,12 +78,10 @@
             </table>
         </div>
     {% else %}
-        <div class="alert alert-info mt-3" role="alert">
-            All tasks have been completed! Create more to add additional tasks.
+        <div class="alert alert-info mt-4" role="alert">
+            No tasks found! Create new tasks using the 'Create Todo' button above.
         </div>
     {% endif %}
 </div>
-
-
 
 {% endblock content %}

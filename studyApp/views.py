@@ -133,11 +133,18 @@ def homework(request):
         form = HomeworkForm()
 
     homeworks = Homework.objects.filter(user=request.user)
-    unfinished_homeworks = homeworks.filter(is_finished=False)  # Filter unfinished homeworks
+    unfinished_homeworks = homeworks.filter(is_finished=False)  
+    # Pagination
+    paginator = Paginator(homeworks, 5)  
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
     context = {
         'homeworks': homeworks,
-        'unfinished_homeworks': unfinished_homeworks,  # Pass unfinished homeworks to the template
+        'unfinished_homeworks': unfinished_homeworks,  
         'form': form,
+        'page_obj': page_obj,
+        'total_homework_count': homeworks.count(),
     }
     return render(request, 'homework.html', context)
 
