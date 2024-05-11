@@ -1,0 +1,14 @@
+<!-- calendar.html -->
+
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h1>Calendar</h1>
+    {% comment %} {% load  schedule_tags %} {% endcomment %}
+
+    <!-- Render the calendar -->
+    <div id="calendar">
+        {% calendar_events %}
+    </div>
+</div>
+{% endblock %}

@@ -26,7 +26,7 @@ class Homework(models.Model):
     title = models.CharField(max_length=255)
     subject = models.CharField(max_length=255)
     description = QuillField()
-    due = models.DateTimeField()
+    due = models.DateField()
     is_finished = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -39,9 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_quill',
     'sweetify',
+    # 'schedule',
+    
 
     'crispy_forms',
     'studyApp',
+    # 'djangobower',
 ]
 
 CRISPY_TEMPLATE_PACK='bootstrap4'
@@ -69,10 +72,24 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "django.template.context_processors.request",
             ],
         },
     },
 ]
+
+# STATICFILES_FINDERS = [
+
+#     'djangobower.finders.BowerFinder',
+# ]
+
+# BOWER_INSTALLED_APPS = (
+#     'jquery',
+#     'jquery-ui',
+#     'bootstrap'
+# )
+
+# BOWER_COMPONENTS_ROOT = BASE_DIR / 'components'
 
 
 WSGI_APPLICATION = 'studyHub.wsgi.application'
@@ -142,6 +159,3 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-

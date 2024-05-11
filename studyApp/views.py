@@ -12,6 +12,8 @@ from .forms import *
 from django.contrib import messages
 from email.mime import audio
 from django.core.paginator import Paginator
+# from schedule.models import Calendar, Event
+
 
 import sweetify
 # For APIs
@@ -117,6 +119,7 @@ def edit_note(request, pk):
 
 
 
+from django.shortcuts import get_object_or_404
 @login_required
 def homework(request):
     if request.method == 'POST':
@@ -125,23 +128,39 @@ def homework(request):
             homework = form.save(commit=False)
             homework.user = request.user
             homework.save()
-            sweetify.success(request, "Homework added successfully")
+
+            # # Attempt to get the first calendar object, or create one if it doesn't exist
+            # calendar = Calendar.objects.first()
+            # if calendar is None:
+            #     calendar = Calendar.objects.create(name='Default Calendar')
+
+            # # Create an event in the calendar for the homework deadline
+            # event = Event(
+            #     calendar=calendar,
+            #     title=homework.title,
+            #     description=homework.description,
+            #     start=homework.due,  # Assuming your Homework model has a 'due' field
+            #     end=homework.due,    # Assuming you want the event to last for a single day
+            # )
+            # event.save()
+
+            messages.success(request, "Homework added successfully")
             return redirect('studyApp:homework')
         else:
-            sweetify.error(request, "Failed to add homework", text=form.errors.as_text())
+            error_message = "Failed to add homework: " + form.errors.as_text()
+            messages.error(request, error_message)
     else:
         form = HomeworkForm()
 
     homeworks = Homework.objects.filter(user=request.user)
-    unfinished_homeworks = homeworks.filter(is_finished=False)  
-    # Pagination
-    paginator = Paginator(homeworks, 5)  
+    unfinished_homeworks = homeworks.filter(is_finished=False)
+    paginator = Paginator(homeworks, 5)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
     context = {
         'homeworks': homeworks,
-        'unfinished_homeworks': unfinished_homeworks,  
+        'unfinished_homeworks': unfinished_homeworks,
         'form': form,
         'page_obj': page_obj,
         'total_homework_count': homeworks.count(),
@@ -149,8 +168,35 @@ def homework(request):
     return render(request, 'homework.html', context)
 
 
+
+
 class HomeworkDetailView(generic.DetailView):
     model = Homework
+
+
+from django.utils.safestring import mark_safe
+
+import json
+
+@login_required
+def calendar_view(request):
+    # Query homework deadlines for the current user
+    homework_deadlines = Homework.objects.filter(user=request.user)
+
+    # Prepare events for the calendar
+    events = []
+    for homework in homework_deadlines:
+        events.append({
+            'title': homework.title,
+            'start': homework.due.strftime('%Y-%m-%d'),  # Format the due date as required by FullCalendar
+            # Add more event properties as needed
+        })
+
+    # Pass events to the template
+    context = {
+        'events': mark_safe(json.dumps(events))  # Mark the events as safe to prevent HTML escaping
+    }
+    return render(request, 'calendar.html', context)
 
 
 @login_required
@@ -328,45 +374,3 @@ def dictionary(request):
         }
     return render(request, 'dictionary.html', context)
 
-
-
-
-
-# YOUTUBE
-@login_required
-def youtube(request):
-    if request.method == 'POST':
-        form = YoutubeSearchForm(request.POST)
-        # text is the field from YoutubeSearchForm
-        text = request.POST['text']
-        # VideosSearch is a module from youtube-search-python
-        video = VideosSearch(text, limit=255)
-        result_list = []
-        for i in video.result()['result']:
-            result_dict = {
-                'input':text,
-                'title':i['title'],
-                'duration':i['duration'],
-                'thumbnail':i['thumbnails'][0]['url'],
-                'channel':i['channel']['name'],
-                'link':i['link'],
-                'views':i['viewCount']['short'],
-                'published':i['publishedTime']
-            }
-            desc = ''
-            if i['descriptionSnippet']:
-                for j in i['descriptionSnippet']:
-                    desc += j['text']
-            result_dict['description'] = desc
-            result_list.append(result_dict)
-            context={
-                'form':form,
-                'results':result_list
-            }
-        return render(request, 'youtube.html', context)
-    else:
-        form = YoutubeSearchForm()
-    context = {
-        'form':form,
-    }
-    return render(request, 'youtube.html', context)
