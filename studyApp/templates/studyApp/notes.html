@@ -123,6 +123,10 @@
                                     <label for="description" class="form-label">Description</label>
                                     {{ form.description }}
                                 </div>
+                                <div class="mb-3">
+                                    <label for="reminder" class="form-label">Reminder</label>
+                                    {{ form.reminder }}
+                                </div>
                                 <!-- Add more fields as needed -->
                             </div>
                             <div class="modal-footer">
@@ -192,35 +196,71 @@
                 </div>
             </div>
         </div>
-        <!-- Other tabs -->
+     
+
+
         <!-- Reminders -->
-        <div class="tab-pane fade" id="nav-reminders" role="tabpanel" aria-labelledby="nav-reminders-tab">
-            <!-- Content related to reminders -->
+<div class="tab-pane fade" id="nav-reminders" role="tabpanel" aria-labelledby="nav-reminders-tab">
+    <div class="container py-4">
+        <h2 class="mb-4">Notes with Reminders</h2>
+        {% if has_reminders %}
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for note in page_obj %}
+            {% if note.reminder %}
+            <div class="col-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ note.title }}</h5>
+                        <p class="card-text">Reminder set for {{ note.reminder }}</p>
+                    </div>
+                    <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+                        <div>
+                            <a href="{% url 'studyApp:edit_reminder' note.id %}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-edit me-1"></i> Edit
+                            </a>
+                            <button type="button" class="btn btn-outline-danger btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#deleteReminderModal{{ note.id }}">
+                                <i class="fas fa-trash me-1"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Delete Reminder Modal -->
+            <div class="modal fade" id="deleteReminderModal{{ note.id }}" tabindex="-1" aria-labelledby="deleteReminderModal{{ note.id }}Label" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteReminderModal{{ note.id }}Label">Delete Reminder</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete the reminder for "{{ note.title }}"?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <form action="{% url 'studyApp:delete_reminder' note.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
         </div>
-        <!-- Shared -->
-        <div class="tab-pane fade" id="nav-shared" role="tabpanel" aria-labelledby="nav-shared-tab">
-            <!-- Content related to shared notes -->
-        </div>
-        <!-- Favourites -->
-        <div class="tab-pane fade" id="nav-favourites" role="tabpanel" aria-labelledby="nav-favourites-tab">
-            <!-- Content related to favourite notes -->
-        </div>
-        <!-- Activity -->
-        <div class="tab-pane fade" id="nav-activity" role="tabpanel" aria-labelledby="nav-activity-tab">
-            <!-- Content related to user activity -->
-        </div>
-        <!-- Categories -->
-        <div class="tab-pane fade" id="nav-categories" role="tabpanel" aria-labelledby="nav-categories-tab">
-            <!-- Content related to note categories -->
-        </div>
-        <!-- Settings -->
-        <div class="tab-pane fade" id="nav-settings" role="tabpanel" aria-labelledby="nav-settings-tab">
-            <!-- Content related to app settings -->
-        </div>
-        <!-- Help/Support -->
-        <div class="tab-pane fade" id="nav-help" role="tabpanel" aria-labelledby="nav-help-tab">
-            <!-- Content related to help/support -->
-        </div>
+        {% else %}
+        <p class="text-muted">You have no reminders.</p>
+        {% endif %}
     </div>
+</div>
+
+
+
+
+
+
+
+    
 </div>
 {% endblock content %}

@@ -42,42 +42,44 @@ class HomeView(View):
 
 from django.db.models import Q
 
+from django.contrib import messages
+
+
 @login_required
 def notes(request):
-    # Create Notes Form
     if request.method == 'POST':
         form = NotesForm(request.POST)
         if form.is_valid():
-            # Save the form data
-            form.instance.user = request.user
-            form.save()
-            sweetify.success(request, "Notes added successfully")    
+            note = form.save(commit=False)
+            note.user = request.user
+            note.save()
+            messages.success(request, "Note added successfully.")
             return redirect('studyApp:notes')
     else:
         form = NotesForm()
 
-    # Get all notes for the current user
     notes_list = Notes.objects.filter(user=request.user)
-
-    # Filter notes based on search query
+    
     query = request.GET.get('q')
     if query:
         notes_list = notes_list.filter(
             Q(title__icontains=query) | Q(description__icontains=query)
         )
 
-    # Pagination
-    paginator = Paginator(notes_list, 8)  
+    paginator = Paginator(notes_list, 8)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
+
+    # Check if there are any reminders
+    has_reminders = any(note.reminder for note in notes_list)
 
     context = {
         'form': form,
         'page_obj': page_obj,
-        'total_notes_count': notes_list.count(),  # Count of filtered notes
+        'total_notes_count': notes_list.count(),
+        'has_reminders': has_reminders,  # Pass the flag to the template
     }
     return render(request, 'notes.html', context)
-
 
 class NotesDetailView(generic.DetailView):
     model = Notes
@@ -115,8 +117,28 @@ def edit_note(request, pk):
     }
     return render(request, 'edit_note.html', context)
 
+def edit_reminder(request, note_id):
+    if request.method == 'POST':
+        note = Notes.objects.get(pk=note_id)
+        new_reminder = request.POST.get('reminder')
+        note.reminder = new_reminder
+        note.save()
+        messages.success(request, 'Reminder updated successfully.')
+        return redirect('studyApp:notes')
+    else:
+        # Handle GET request if needed
+        pass
 
-
+def delete_reminder(request, note_id):
+    if request.method == 'POST':
+        note = Notes.objects.get(pk=note_id)
+        note.reminder = None  # Remove the reminder
+        note.save()
+        messages.success(request, 'Reminder deleted successfully.')
+        return redirect('studyApp:notes')
+    else:
+        # Handle GET request if needed
+        pass
 
 
 from django.shortcuts import get_object_or_404

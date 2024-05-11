@@ -15,7 +15,8 @@ class RegistrationForm(UserCreationForm):
 class NotesForm(forms.ModelForm):
     class Meta:
         model = Notes
-        fields = ['title', 'description']
+        fields = ['title', 'description', 'reminder']
+        widgets = {'reminder': forms.DateInput(attrs={'type': 'date'})}
 
 # This is a class of DateInput to show a widget of a calender when adding dates in a form
 class DateInput(forms.DateInput):
