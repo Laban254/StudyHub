@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django_quill.fields import QuillField
 
-class Notes(models.Model):
+class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = QuillField()
@@ -22,6 +22,10 @@ class Notes(models.Model):
         # The model will have this name in the admin page
         verbose_name_plural = "Notes"
 
+
+class FavoriteNote(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    note = models.ForeignKey(Note, on_delete=models.CASCADE)
 
 class Homework(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -55,7 +59,7 @@ class Todo(models.Model):
         verbose_name_plural = "Todos"
 
 class SharedNote(models.Model):
-    note = models.ForeignKey(Notes, on_delete=models.CASCADE)
+    note = models.ForeignKey(Note, on_delete=models.CASCADE)
     shared_with = models.ManyToManyField(User, related_name='shared_notes')
     shared_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='shared_by')
     shared_date = models.DateTimeField(auto_now_add=True)

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django_quill',
     'sweetify',
     # 'schedule',
+    'actstream',
     
 
     'crispy_forms',

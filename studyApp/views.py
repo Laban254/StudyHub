@@ -13,7 +13,12 @@ from django.contrib import messages
 from email.mime import audio
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
+from actstream.models import Action
+from django.db.models import Q
 
+from django.contrib import messages
+
+from django.http import HttpResponseBadRequest
 # from schedule.models import Calendar, Event
 
 
@@ -42,11 +47,7 @@ class HomeView(View):
         return render(request, 'home.html')
 
 
-from django.db.models import Q
 
-from django.contrib import messages
-
-from django.http import HttpResponseBadRequest
 
 @login_required
 def notes(request):
@@ -62,10 +63,12 @@ def notes(request):
             return HttpResponseBadRequest("Invalid POST request")
 
     # For GET requests, return the forms along with other necessary context
-    notes_list = Notes.objects.filter(user=request.user)
+    notes_list = Note.objects.filter(user=request.user)
     shared_notes_sent = SharedNote.objects.filter(shared_by=request.user)
     shared_notes_received = SharedNote.objects.filter(shared_with=request.user)
     favorite_notes = notes_list.filter(favorite=True)
+    activities = Action.objects.all()[:10]
+    
     
     query = request.GET.get('q')
     if query:
@@ -88,6 +91,7 @@ def notes(request):
         'shared_notes_sent': shared_notes_sent,
         'shared_notes_received': shared_notes_received,
         'favorite_notes': favorite_notes,
+        'activities': activities,
     }
     return render(request, 'notes.html', context)
 
@@ -118,11 +122,12 @@ def handle_share_notes(request, form):
 
 
 class NotesDetailView(generic.DetailView):
-    model = Notes
+    model = Note
+    template_name = 'studyApp/notes_detail.html'
 
 @require_POST
 def toggle_favorite(request, note_id):
-    note = Notes.objects.get(pk=note_id)
+    note = Note.objects.get(pk=note_id)
     note.favorite = not note.favorite
     note.save()
 
@@ -136,7 +141,7 @@ def toggle_favorite(request, note_id):
 
 @login_required
 def delete_note(request, pk):
-    note = Notes.objects.get(id=pk)
+    note = Note.objects.get(id=pk)
     # Check if the note belongs to the current user before deleting
     if note.user == request.user:
         note.delete()
@@ -148,7 +153,7 @@ def delete_note(request, pk):
 
 @login_required
 def edit_note(request, pk):
-    note = get_object_or_404(Notes, id=pk)
+    note = get_object_or_404(Note, id=pk)
     if note.user != request.user:
         return redirect('studyApp:notes')
 
@@ -170,7 +175,7 @@ def edit_note(request, pk):
 
 def edit_reminder(request, note_id):
     if request.method == 'POST':
-        note = Notes.objects.get(pk=note_id)
+        note = Note.objects.get(pk=note_id)
         new_reminder = request.POST.get('reminder')
         note.reminder = new_reminder
         note.save()
@@ -182,7 +187,7 @@ def edit_reminder(request, note_id):
 
 def delete_reminder(request, note_id):
     if request.method == 'POST':
-        note = Notes.objects.get(pk=note_id)
+        note = Note.objects.get(pk=note_id)
         note.reminder = None  # Remove the reminder
         note.save()
         messages.success(request, 'Reminder deleted successfully.')
@@ -291,7 +296,6 @@ def homework(request):
         'total_homework_count': homeworks.count(),
     }
     return render(request, 'homework.html', context)
-
 
 
 

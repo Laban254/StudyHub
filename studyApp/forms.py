@@ -14,13 +14,13 @@ class RegistrationForm(UserCreationForm):
 
 class NotesForm(forms.ModelForm):
     class Meta:
-        model = Notes
+        model = Note
         fields = ['title', 'description', 'reminder']
         widgets = {'reminder': forms.DateInput(attrs={'type': 'date'})}
 
 
 class ShareNoteForm(forms.Form):
-    note = forms.ModelChoiceField(queryset=Notes.objects.all())
+    note = forms.ModelChoiceField(queryset=Note.objects.all())
     users = forms.ModelMultipleChoiceField(queryset=User.objects.all())
 
 
