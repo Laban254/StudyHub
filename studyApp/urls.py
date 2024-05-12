@@ -30,6 +30,8 @@ urlpatterns = [
     path('shared/notes/received/', shared_notes_received, name='shared_notes_received'),
     path('shared/notes/sent/', shared_notes_sent, name='shared_notes_sent'),
 
+    path('toggle_favorite/<int:note_id>/', toggle_favorite, name='toggle_favorite'),
+
     path('homework/', homework, name="homework"),
     path('edit_homework/<int:pk>', update_homework, name="edit_homework"),
     path('delete_homework/<int:pk>/', delete_homework, name="delete_homework"),

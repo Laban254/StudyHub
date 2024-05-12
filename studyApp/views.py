@@ -12,6 +12,8 @@ from .forms import *
 from django.contrib import messages
 from email.mime import audio
 from django.core.paginator import Paginator
+from django.views.decorators.http import require_POST
+
 # from schedule.models import Calendar, Event
 
 
@@ -63,6 +65,7 @@ def notes(request):
     notes_list = Notes.objects.filter(user=request.user)
     shared_notes_sent = SharedNote.objects.filter(shared_by=request.user)
     shared_notes_received = SharedNote.objects.filter(shared_with=request.user)
+    favorite_notes = notes_list.filter(favorite=True)
     
     query = request.GET.get('q')
     if query:
@@ -84,6 +87,7 @@ def notes(request):
         'has_reminders': has_reminders,
         'shared_notes_sent': shared_notes_sent,
         'shared_notes_received': shared_notes_received,
+        'favorite_notes': favorite_notes,
     }
     return render(request, 'notes.html', context)
 
@@ -115,6 +119,19 @@ def handle_share_notes(request, form):
 
 class NotesDetailView(generic.DetailView):
     model = Notes
+
+@require_POST
+def toggle_favorite(request, note_id):
+    note = Notes.objects.get(pk=note_id)
+    note.favorite = not note.favorite
+    note.save()
+
+    if note.favorite:
+        messages.info(request, f'Note "{note.title}" added to favorites.')
+    else:
+        messages.info(request, f'Note "{note.title}" removed from favorites.')
+
+    return redirect('studyApp:notes')
 
 
 @login_required

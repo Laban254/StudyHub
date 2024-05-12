@@ -12,6 +12,7 @@ class Notes(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     reminder = models.DateTimeField(blank=True, null=True)
+    favorite = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
