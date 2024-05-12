@@ -1,0 +1,74 @@
+<!-- activity_feed.html -->
+
+<style>
+.activity-feed {
+    list-style-type: none;
+    padding: 0;
+}
+
+.activity-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.activity-icon {
+    margin-right: 15px;
+    font-size: 24px;
+    color: #6c757d;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-description {
+    font-size: 16px;
+    color: #333;
+}
+
+.activity-timestamp {
+    font-size: 14px;
+    color: #999;
+}
+
+.no-activity {
+    padding: 15px;
+    color: #999;
+}
+
+
+
+
+</style>
+
+<ul class="activity-feed">
+    {% for activity in activities %}
+        <li class="activity-item">
+            <div class="activity-details">
+                <span class="activity-icon">
+                    {% if activity.type == 'creation' %}
+                        <i class="fas fa-plus-circle"></i>
+                    {% elif activity.type == 'deletion' %}
+                        <i class="fas fa-trash-alt"></i>
+                    {% elif activity.type == 'update' %}
+                        <i class="fas fa-pencil-alt"></i>
+                    {% endif %}
+                </span>
+                <div class="activity-content">
+                    <span class="activity-description">{{ activity.description }}</span>
+                    <span class="activity-timestamp">{{ activity.timestamp }}</span>
+                </div>
+            </div>
+        </li>
+    {% empty %}
+        <li class="no-activity">No recent activity.</li>
+    {% endfor %}
+</ul>
+
+
+

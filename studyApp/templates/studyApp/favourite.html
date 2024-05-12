@@ -1,14 +1,11 @@
-
-    <h4 class="mb-4">Favorite Notes</h4>
+<h4 class="mb-4">Favorite Notes</h4>
     <div class="row">
         <!-- Display favorite notes as cards -->
         {% for note in favorite_notes %}
             <div class="col-lg-4 mb-4">
                 <div class="card h-100">
                     <div class="card-body" style="height: 100px; overflow: hidden;">
-                        <h5 class="card-title">
-                            <a href="{% url 'studyApp:notes_detail' note.id %}" class="text-decoration-none">{{ note.title }}</a>
-                        </h5>
+                        <h5 class="card-title">{{ note.title }}</h5>
                         <p class="card-text">{{ note.description.html | safe }}</p>
                     </div>
                     <div class="card-footer bg-transparent border-top-0">
@@ -25,6 +22,4 @@
             </div>
         {% endfor %}
     </div>
-
-
     
