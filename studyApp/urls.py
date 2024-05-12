@@ -26,6 +26,9 @@ urlpatterns = [
     path('edit_reminder/<int:note_id>/', edit_reminder, name='edit_reminder'),
     path('delete_reminder/<int:note_id>/', delete_reminder, name='delete_reminder'),
 
+    # path('notes/', share_notes, name='share_note'),
+    path('shared/notes/received/', shared_notes_received, name='shared_notes_received'),
+    path('shared/notes/sent/', shared_notes_sent, name='shared_notes_sent'),
 
     path('homework/', homework, name="homework"),
     path('edit_homework/<int:pk>', update_homework, name="edit_homework"),

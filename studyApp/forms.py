@@ -18,6 +18,12 @@ class NotesForm(forms.ModelForm):
         fields = ['title', 'description', 'reminder']
         widgets = {'reminder': forms.DateInput(attrs={'type': 'date'})}
 
+
+class ShareNoteForm(forms.Form):
+    note = forms.ModelChoiceField(queryset=Notes.objects.all())
+    users = forms.ModelMultipleChoiceField(queryset=User.objects.all())
+
+
 # This is a class of DateInput to show a widget of a calender when adding dates in a form
 class DateInput(forms.DateInput):
     input_type = 'date'

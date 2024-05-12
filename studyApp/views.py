@@ -44,21 +44,25 @@ from django.db.models import Q
 
 from django.contrib import messages
 
+from django.http import HttpResponseBadRequest
 
 @login_required
 def notes(request):
-    if request.method == 'POST':
-        form = NotesForm(request.POST)
-        if form.is_valid():
-            note = form.save(commit=False)
-            note.user = request.user
-            note.save()
-            messages.success(request, "Note added successfully.")
-            return redirect('studyApp:notes')
-    else:
-        form = NotesForm()
+    create_notes_form = NotesForm()
+    share_note_form = ShareNoteForm()
 
+    if request.method == 'POST':
+        if 'create_note' in request.POST:
+            return handle_create_notes(request, create_notes_form)
+        elif 'share_note' in request.POST:
+            return handle_share_notes(request, share_note_form)
+        else:
+            return HttpResponseBadRequest("Invalid POST request")
+
+    # For GET requests, return the forms along with other necessary context
     notes_list = Notes.objects.filter(user=request.user)
+    shared_notes_sent = SharedNote.objects.filter(shared_by=request.user)
+    shared_notes_received = SharedNote.objects.filter(shared_with=request.user)
     
     query = request.GET.get('q')
     if query:
@@ -70,19 +74,48 @@ def notes(request):
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
-    # Check if there are any reminders
     has_reminders = any(note.reminder for note in notes_list)
 
     context = {
-        'form': form,
+        'create_notes_form': create_notes_form,
+        'share_note_form': share_note_form,
         'page_obj': page_obj,
         'total_notes_count': notes_list.count(),
-        'has_reminders': has_reminders,  # Pass the flag to the template
+        'has_reminders': has_reminders,
+        'shared_notes_sent': shared_notes_sent,
+        'shared_notes_received': shared_notes_received,
     }
     return render(request, 'notes.html', context)
 
+def handle_create_notes(request, form):
+    form = NotesForm(request.POST)
+    if form.is_valid():
+        note = form.save(commit=False)
+        note.user = request.user
+        note.save()
+        messages.success(request, "Note added successfully.")
+    return redirect('studyApp:notes')
+
+def handle_share_notes(request, form):
+    form = ShareNoteForm(request.POST)
+    if form.is_valid():
+        note = form.cleaned_data['note']
+        users = form.cleaned_data['users']
+        current_user = request.user
+        for user in users:
+            shared_note = SharedNote.objects.create(
+                note=note,
+                shared_by=current_user
+            )
+            shared_note.shared_with.set([user])
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+
+
 class NotesDetailView(generic.DetailView):
     model = Notes
+
 
 @login_required
 def delete_note(request, pk):
@@ -117,6 +150,7 @@ def edit_note(request, pk):
     }
     return render(request, 'edit_note.html', context)
 
+
 def edit_reminder(request, note_id):
     if request.method == 'POST':
         note = Notes.objects.get(pk=note_id)
@@ -140,6 +174,58 @@ def delete_reminder(request, note_id):
         # Handle GET request if needed
         pass
 
+
+from django.http import JsonResponse
+
+from django.http import JsonResponse
+
+# @login_required
+# def share_notes(request):
+#     if request.method == 'POST':
+#         form = ShareNoteForm(request.POST)
+#         if form.is_valid():
+#             note = form.cleaned_data['note']
+#             users = form.cleaned_data['users']
+#             current_user = request.user
+#             for user in users:
+#                 shared_note = SharedNote.objects.create(
+#                     note=note,
+#                     shared_with=user,
+#                     shared_by=current_user
+#                 )
+#             return JsonResponse({'success': True})  # Return a JSON response indicating success
+#         else:
+#             return JsonResponse({'success': False, 'errors': form.errors}, status=400)  # Return errors if form is invalid
+#     elif request.method == 'GET':
+#         form = ShareNoteForm()  # Create an instance of the form
+#         return JsonResponse({'form': form.as_json()})  # Return the form data as JSON
+
+
+@login_required
+def shared_notes_received(request):
+    shared_notes_received = SharedNote.objects.filter(shared_with=request.user)
+    data = [
+        {
+            'note': shared_note.note.title,
+            'shared_by': shared_note.shared_by.username,
+            'shared_date': shared_note.shared_date.strftime('%Y-%m-%d %H:%M:%S')  # Format the date as needed
+        }
+        for shared_note in shared_notes_received
+    ]
+    return JsonResponse(data, safe=False)
+
+@login_required
+def shared_notes_sent(request):
+    shared_notes_sent = SharedNote.objects.filter(shared_by=request.user)
+    data = [
+        {
+            'note': shared_note.note.title,
+            'shared_with': shared_note.shared_with.username,
+            'shared_date': shared_note.shared_date.strftime('%Y-%m-%d %H:%M:%S')  # Format the date as needed
+        }
+        for shared_note in shared_notes_sent
+    ]
+    return JsonResponse(data, safe=False)
 
 from django.shortcuts import get_object_or_404
 @login_required
