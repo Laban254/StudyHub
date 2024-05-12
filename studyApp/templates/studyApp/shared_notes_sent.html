@@ -1,0 +1,84 @@
+<style>
+
+.shared-notes-sent {
+    margin-top: 20px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.shared-notes-list {
+    list-style: none;
+    padding: 0;
+}
+
+.shared-note-item {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.note-info {
+    margin-bottom: 5px;
+}
+
+.note-title {
+    font-weight: bold;
+    color: #007bff; /* Blue color for note titles */
+}
+
+.shared-date {
+    color: #888;
+}
+
+.shared-with-label {
+    font-weight: bold;
+}
+
+.shared-with-users {
+    list-style: none;
+    padding: 0;
+    margin-top: 5px;
+}
+
+.user {
+    display: inline-block;
+    margin-right: 5px;
+    padding: 3px 6px;
+    background-color: #f0f0f0;
+    border-radius: 3px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+
+</style>
+
+
+
+<div class="shared-notes-sent">
+    <h4 class="section-title">Shared Notes Sent</h4>
+    <ul class="shared-notes-list">
+        <!-- List of shared notes sent -->
+        {% for shared_note in shared_notes_sent %}
+            <li class="shared-note-item">
+                <div class="note-info">
+                    <span class="note-title">{{ shared_note.note.title }}</span>
+                    <span class="shared-date">Shared on {{ shared_note.shared_date|date:"F d, Y" }}</span>
+                </div>
+                <div class="shared-with">
+                    <span class="shared-with-label">Shared with:</span>
+                    <ul class="shared-with-users">
+                        {% for user in shared_note.shared_with.all %}
+                            <li class="user">{{ user.username }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+

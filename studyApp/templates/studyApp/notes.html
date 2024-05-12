@@ -60,6 +60,47 @@
         z-index: 1000;
     }
 
+
+    {% comment %} share form {% endcomment %}
+
+    /* Modern Form Styles */
+.modern-form {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.modern-form .form-group {
+    margin-bottom: 20px;
+}
+
+.modern-form label {
+    font-weight: bold;
+}
+
+.modern-form input[type="text"],
+.modern-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.modern-form .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.modern-form .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+
 </style>
 
 <div class="container py-2">
@@ -115,17 +156,18 @@
                         <form method="POST">
                             {% csrf_token %}
                             <div class="modal-body">
+                                <input type="hidden" name="create_note" value="1">
                                 <div class="mb-3">
                                     <label for="title" class="form-label">Title</label>
                                     <input type="text" class="form-control" id="title" name="title" placeholder="Enter title" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Description</label>
-                                    {{ form.description }}
+                                    {{ create_notes_form.description }}
                                 </div>
                                 <div class="mb-3">
                                     <label for="reminder" class="form-label">Reminder</label>
-                                    {{ form.reminder }}
+                                    {{ create_notes_form.reminder }}
                                 </div>
                                 <!-- Add more fields as needed -->
                             </div>
@@ -147,9 +189,9 @@
                                 <div class="card-header bg-dark text-white text-center ">{{ note.title }}</div>
                                 <div class="card-body text-dark" style="max-height: 100px; overflow-y: auto;">{{ note.description.html|truncatechars:80|safe }}</div>
                                 <div class="card-footer bg-transparent border-top-0">
-                                    <p class="card-text">
-                                        <small class="text-muted">updated {{note.updated_at}} </small>
-                                    </p> 
+                                        <p class="card-text">
+                                            <small class="text-muted">updated {{note.updated_at}} </small>
+                                        </p> 
                                     <a href="{% url 'studyApp:edit_note' note.id %}" class="text-decoration-none me-2">
                                         <i class="fas fa-edit text-warning"></i>
                                     </a>
@@ -255,6 +297,90 @@
     </div>
 </div>
 
+<div class="tab-pane fade" id="nav-shared" role="tabpanel" aria-labelledby="nav-shared-tab">
+<!-- Button to trigger the modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#shareNoteModal">
+    <i class="fas fa-share"></i> Share Note
+</button>
+
+
+<!-- Modal for sharing note -->
+<div class="modal fade" id="shareNoteModal" tabindex="-1" role="dialog" aria-labelledby="shareNoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="shareNoteModalLabel">
+                    <i class="fas fa-share"></i> Share Note
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form for sharing note -->
+                <form id="shareNoteForm" method="post" class="modern-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="share_note" value="1">
+                    
+                    <div class="form-group">
+                        <label for="note">Select Note:</label>
+                        {{ share_note_form.note }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="users">Select Users:</label>
+                        {{ share_note_form.users }}
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" form="shareNoteForm" class="btn btn-primary">Share</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Tab navigation -->
+    <ul class="nav nav-tabs" id="sharedTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="received-tab" data-toggle="tab" href="#shared-received" role="tab" aria-controls="shared-received" aria-selected="true">Shared Notes Received</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="sent-tab" data-toggle="tab" href="#shared-sent" role="tab" aria-controls="shared-sent" aria-selected="false">Shared Notes Sent</a>
+        </li>
+        <!-- Add more tabs as needed -->
+    </ul>
+
+    <!-- Tab content -->
+    <div class="tab-content" id="sharedTabContent">
+        <!-- Content for 'Shared Notes Received' tab -->
+        <div class="tab-pane fade show active" id="shared-received" role="tabpanel" aria-labelledby="received-tab">
+            {% include 'studyApp/shared_notes_received.html' %}
+        </div>
+        <!-- Content for 'Shared Notes Sent' tab -->
+        <div class="tab-pane fade" id="shared-sent" role="tabpanel" aria-labelledby="sent-tab">
+            
+            {% include 'studyApp/shared_notes_sent.html' %}
+            <!-- Content for 'Shared Notes Sent' tab goes here -->
+        </div>
+        <!-- Add more tab content includes as needed -->
+        
+    </div>
+</div>
+
+    
+
+
+
+
+
+
+
+
 
 
 
@@ -263,4 +389,8 @@
 
     
 </div>
+
+
+
+
 {% endblock content %}

@@ -1,0 +1,11 @@
+<!-- share_notes.html -->
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2>Share Notes</h2>
+    <form method="post" action="{% url 'studyApp:share_notes' %}">
+        {% csrf_token %}
+        <!-- Form fields for sharing notes -->
+    </form>
+</div>
+{% endblock %}
