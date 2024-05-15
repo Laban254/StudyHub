@@ -49,6 +49,7 @@ class HomeView(View):
 
 
 
+
 @login_required
 def notes(request):
     create_notes_form = NotesForm()
@@ -69,12 +70,26 @@ def notes(request):
     favorite_notes = notes_list.filter(favorite=True)
     activities = Action.objects.all()[:10]
     
-    
+    # Filter notes by search query if present
     query = request.GET.get('q')
     if query:
         notes_list = notes_list.filter(
             Q(title__icontains=query) | Q(description__icontains=query)
         )
+
+    # Sort notes based on sorting parameter
+    sort_by = request.GET.get('sort_by')
+    if not sort_by:
+        # Set default sorting to arrange notes by time created with the newest first
+        notes_list = notes_list.order_by('-created_at')
+    elif sort_by == 'title':
+        notes_list = notes_list.order_by('title')
+    elif sort_by == '-title':
+        notes_list = notes_list.order_by('-title')
+    elif sort_by == 'date_created':
+        notes_list = notes_list.order_by('created_at')
+    elif sort_by == '-date_created':
+        notes_list = notes_list.order_by('-created_at')
 
     paginator = Paginator(notes_list, 8)
     page_number = request.GET.get('page', 1)
@@ -94,6 +109,7 @@ def notes(request):
         'activities': activities,
     }
     return render(request, 'notes.html', context)
+
 
 def handle_create_notes(request, form):
     form = NotesForm(request.POST)

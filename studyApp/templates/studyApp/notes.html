@@ -138,6 +138,19 @@
                     </div>
                 </form>
 
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Sort By
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                        <li><a class="dropdown-item" href="?sort_by=title">Title (Ascending)</a></li>
+                        <li><a class="dropdown-item" href="?sort_by=-title">Title (Descending)</a></li>
+                        <li><a class="dropdown-item" href="?sort_by=date_created">Date Created (Ascending)</a></li>
+                        <li><a class="dropdown-item" href="?sort_by=-date_created">Date Created (Descending)</a></li>
+                        <!-- Add more sorting options as needed -->
+                    </ul>
+                </div>
+
                 <!-- Display Total Number of Notes -->
                 <div class="notes-summary">
                     <span class="notes-title">Total Notes:</span>
