@@ -1,47 +1,41 @@
-<script> 
-.shared-notes-received {
-    margin-top: 20px;
-}
+<style>
+   .shared-notes-received {
+        margin-top: 20px;
+    }
 
-.section-title {
-    font-size: 1.5rem;
-    color: #333;
-}
+   .section-title {
+        font-size: 1.5rem;
+        color: #333;
+    }
 
-.shared-notes-list {
-    list-style: none;
-    padding: 0;
-}
+   .shared-notes-list {
+        list-style: none;
+        padding: 0;
+    }
 
-.shared-note-item {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    padding: 10px;
-}
+   .shared-note-item {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        padding: 10px;
+    }
 
-.note-info {
-    margin-bottom: 5px;
-}
+   .note-info {
+        margin-bottom: 5px;
+    }
 
-.note-title {
-    font-weight: bold;
-    color: #007bff; /* Blue color for note titles */
-}
+   .note-title {
+        font-weight: bold;
+        color: #007bff; /* Blue color for note titles */
+    }
 
-.shared-by {
-    color: #888;
-    font-size: 0.9rem;
-}
+   .shared-by,
+   .shared-date {
+        color: #888;
+        font-size: 0.9rem;
+    }
+</style>
 
-.shared-date {
-    color: #888;
-    font-size: 0.9rem;
-}
-
-
-
-</script>
 
 <div class="shared-notes-received">
     <h4 class="section-title">Shared Notes Received</h4>
@@ -50,11 +44,19 @@
         {% for shared_note in shared_notes_received %}
             <li class="shared-note-item">
                 <div class="note-info">
-                    <span class="note-title">{{ shared_note.note.title }}</span>
-                    <span class="shared-by">Shared by {{ shared_note.shared_by.username }}</span>
-                    <span class="shared-date">Shared on {{ shared_note.shared_date|date:"F d, Y" }}</span>
+                    <!-- Title with link to notes detail page, including an aria-label for accessibility -->
+                    <a href="{% url 'studyApp:notes_detail' shared_note.note.id %}" class="note-title" aria-label="View note details">{{ shared_note.note.title }}</a>
+                    <!-- Metadata about who shared the note and when -->
+                    <div class="shared-meta">
+                        <span class="shared-by">Received from <strong>{{ shared_note.shared_by.username }}</strong></span>
+                        <span class="shared-date">Shared on {{ shared_note.shared_date|date:"F d, Y" }}</span>
+                    </div>
                 </div>
             </li>
         {% endfor %}
     </ul>
 </div>
+
+
+
+

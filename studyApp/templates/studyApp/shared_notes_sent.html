@@ -1,6 +1,6 @@
 <style>
-
-.shared-notes-sent {
+    /* Base styles for shared notes section */
+.shared-notes-section {
     margin-top: 20px;
 }
 
@@ -30,55 +30,29 @@
     color: #007bff; /* Blue color for note titles */
 }
 
-.shared-date {
+.shared-meta span {
     color: #888;
-}
-
-.shared-with-label {
-    font-weight: bold;
-}
-
-.shared-with-users {
-    list-style: none;
-    padding: 0;
-    margin-top: 5px;
-}
-
-.user {
-    display: inline-block;
-    margin-right: 5px;
-    padding: 3px 6px;
-    background-color: #f0f0f0;
-    border-radius: 3px;
     font-size: 0.9rem;
-    color: #555;
 }
-
 
 </style>
 
-
-
-<div class="shared-notes-sent">
+<div class="shared-notes-section">
     <h4 class="section-title">Shared Notes Sent</h4>
     <ul class="shared-notes-list">
-        <!-- List of shared notes sent -->
+        <!-- Dynamically generated list of shared notes sent -->
         {% for shared_note in shared_notes_sent %}
             <li class="shared-note-item">
                 <div class="note-info">
-                    <span class="note-title">{{ shared_note.note.title }}</span>
-                    <span class="shared-date">Shared on {{ shared_note.shared_date|date:"F d, Y" }}</span>
-                </div>
-                <div class="shared-with">
-                    <span class="shared-with-label">Shared with:</span>
-                    <ul class="shared-with-users">
-                        {% for user in shared_note.shared_with.all %}
-                            <li class="user">{{ user.username }}</li>
-                        {% endfor %}
-                    </ul>
+                    <!-- Link to note details with accessible name -->
+                    <a href="{% url 'studyApp:notes_detail' shared_note.note.id %}" class="note-title" aria-label="{{ shared_note.note.title }}">{{ shared_note.note.title }}</a>
+                    <!-- Metadata about sharing -->
+                    <div class="shared-meta">
+                        <span class="shared-with">Shared with <strong>{{ shared_note.shared_with.all|join:", " }}</strong></span>
+                        <span class="shared-date">Shared on {{ shared_note.shared_date|date:"F d, Y" }}</span>
+                    </div>
                 </div>
             </li>
         {% endfor %}
     </ul>
 </div>
-

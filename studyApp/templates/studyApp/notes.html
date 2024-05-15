@@ -32,7 +32,7 @@
 
     /* Fixed height for cards */
     .card {
-        height: 220px; /* Set the desired height */
+        height: 233px; /* Set the desired height */
     }
 
     .notes-summary {
@@ -110,9 +110,7 @@
         <button class="nav-link" id="nav-shared-tab" data-bs-toggle="tab" data-bs-target="#nav-shared" type="button" role="tab" aria-controls="nav-shared" aria-selected="false">Shared</button>
         <button class="nav-link" id="nav-favourites-tab" data-bs-toggle="tab" data-bs-target="#nav-favourites" type="button" role="tab" aria-controls="nav-favourites" aria-selected="false">Favourites</button>
         <button class="nav-link" id="nav-activity-tab" data-bs-toggle="tab" data-bs-target="#nav-activity" type="button" role="tab" aria-controls="nav-activity" aria-selected="false">Activity</button>
-        <button class="nav-link" id="nav-categories-tab" data-bs-toggle="tab" data-bs-target="#nav-categories" type="button" role="tab" aria-controls="nav-categories" aria-selected="false">Categories</button>
-        <button class="nav-link" id="nav-settings-tab" data-bs-toggle="tab" data-bs-target="#nav-settings" type="button" role="tab" aria-controls="nav-settings" aria-selected="false">Settings</button>
-        <button class="nav-link" id="nav-help-tab" data-bs-toggle="tab" data-bs-target="#nav-help" type="button" role="tab" aria-controls="nav-help" aria-selected="false">Help/Support</button>
+        
     </div>
 
     <div class="tab-content">
@@ -196,39 +194,73 @@
             <!-- Displaying Notes -->
             <div class="row mt-4" style="margin-bottom: 100px;">
                 {% for note in page_obj %}
-                    <div class="col-md-3 mb-4">
-                        <a href="{% url 'studyApp:notes_detail' note.id %}" class="text-decoration-none">
-                            <div class="card shadow-sm bg-light">
-                                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                        <span>{{ note.title }}</span>
-                        <form action="{% url 'studyApp:toggle_favorite' note.id %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-link text-white">
-                                {% if note.favorite %}
-                                    <i class="fas fa-star"></i>
-                                {% else %}
-                                    <i class="far fa-star"></i>
-                                {% endif %}
-                            </button>
-                        </form>
-                    </div>
-                                <div class="card-body text-dark" style="max-height: 100px; overflow-y: auto;">{{ note.description.html|truncatechars:80|safe }}</div>
-                                <div class="card-footer bg-transparent border-top-0">
-                                        <p class="card-text">
-                                            <small class="text-muted">updated {{note.updated_at}} </small>
-                                        </p> 
-                                    <a href="{% url 'studyApp:edit_note' note.id %}" class="text-decoration-none me-2">
-                                        <i class="fas fa-edit text-warning"></i>
-                                    </a>
-                                    <a href="{% url 'studyApp:delete_note' note.id %}" class="text-decoration-none">
-                                        <i class="fas fa-trash text-danger"></i>
-                                    </a>
+                <div class="col-md-3 mb-4">
+                    <a href="{% url 'studyApp:notes_detail' note.id %}" class="text-decoration-none">
+                        <div class="card shadow-sm bg-light">
+                            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                                <span>{{ note.title }}</span>
+                                <form action="{% url 'studyApp:toggle_favorite' note.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-link text-white">
+                                        {% if note.favorite %}
+                                        <i class="fas fa-star"></i>
+                                        {% else %}
+                                        <i class="far fa-star"></i>
+                                        {% endif %}
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="card-body text-dark" style="max-height: 100px; overflow-y: auto;">
+                                {{ note.description.html|truncatechars:100|safe }}
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <p class="card-text text-muted text-center">
+                                            <small>Updated on {{ note.updated_at | date:"D, M d, Y" }}</small>
+                                        </p>
+                                    </div>
+                                    <div class="col-12 d-flex ">
+                                        <a href="{% url 'studyApp:edit_note' note.id %}" class="me-2">
+                                            <i class="fas fa-edit text-warning"></i>
+                                        </a>
+                                        <a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#deleteNoteModal{{ note.id }}">
+                                            <i class="fas fa-trash text-danger"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </a>
+                        </div>
+                    </a>
+                </div>
+                <!-- Modal for deleting a note -->
+                <div class="modal fade" id="deleteNoteModal{{ note.id }}" tabindex="-1" aria-labelledby="deleteNoteModal{{ note.id }}Label" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteNoteModal{{ note.id }}Label">Delete Note</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to delete the note "{{ note.title }}"?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <form action="{% url 'studyApp:delete_note' note.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
+                </div>
                 {% endfor %}
             </div>
+
+
+
+
+
 
             <!-- Pagination -->
             <div class="footer">
@@ -268,58 +300,7 @@
 
  <!-- Reminders 📅 -->
 <div class="tab-pane fade" id="nav-reminders" role="tabpanel" aria-labelledby="nav-reminders-tab">
-        <div class="container py-4">
-            <h2 class="mb-4">Notes with Reminders</h2>
-            {% if has_reminders %}
-            <div class="row row-cols-1 row-cols-md-2 g-4">
-                {% for note in page_obj %}
-                {% if note.reminder %}
-                <div class="col-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ note.title }}</h5>
-                            <p class="card-text">Reminder set for {{ note.reminder }}</p>
-                        </div>
-                        <div class="card-footer bg-light d-flex justify-content-between align-items-center">
-                            <div>
-                                <a href="{% url 'studyApp:edit_reminder' note.id %}" class="btn btn-outline-primary btn-sm">
-                                    <i class="fas fa-edit me-1"></i> Edit
-                                </a>
-                                <button type="button" class="btn btn-outline-danger btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#deleteReminderModal{{ note.id }}">
-                                    <i class="fas fa-trash me-1"></i> Delete
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Delete Reminder Modal -->
-                <div class="modal fade" id="deleteReminderModal{{ note.id }}" tabindex="-1" aria-labelledby="deleteReminderModal{{ note.id }}Label" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="deleteReminderModal{{ note.id }}Label">Delete Reminder</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                Are you sure you want to delete the reminder for "{{ note.title }}"?
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <form action="{% url 'studyApp:delete_reminder' note.id %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-                {% endfor %}
-            </div>
-            {% else %}
-            <p class="text-muted">You have no reminders.</p>
-            {% endif %}
-        </div>
+        {% include 'studyApp/reminders.html' %}
     </div>
 
 

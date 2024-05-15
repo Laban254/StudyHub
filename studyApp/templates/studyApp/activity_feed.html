@@ -1,55 +1,66 @@
 <!-- activity_feed.html -->
 
+
 <style>
 .activity-feed {
     list-style-type: none;
     padding: 0;
+    max-width: 500px; /* Maintains compactness */
+    margin: 20px auto;
 }
 
 .activity-item {
-    margin-bottom: 20px;
-    padding: 15px;
-    border-radius: 8px;
     display: flex;
     align-items: center;
-    background-color: #f9f9f9;
+    padding: 10px; /* Compact padding */
+    background-color: #f9f9f9; /* Light background for contrast */
+    border-radius: 8px;
+    margin-bottom: 10px; /* Tighter layout */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.activity-icon-container {
+    margin-right: 10px; /* Closer icon-text proximity */
+}
+
 .activity-icon {
-    margin-right: 15px;
-    font-size: 24px;
-    color: #6c757d;
+    font-size: 20px; /* Slightly reduced icon size */
+    color: #6c757d; /* Medium contrast icon color */
 }
 
 .activity-content {
-    flex: 1;
+    flex-grow: 1;
 }
 
 .activity-description {
-    font-size: 16px;
-    color: #333;
+    font-size: 14px; /* Smaller font size for compactness */
+    color: #333; /* High contrast text color */
+    margin-bottom: 2px; /* Tighter spacing */
+    line-height: 1.2; /* Improved line height for readability */
 }
 
 .activity-timestamp {
-    font-size: 14px;
-    color: #999;
+    font-size: 12px; /* Smaller font size for compactness */
+    color: #999; /* Lower contrast for secondary info */
+    line-height: 1.2; /* Improved line height for readability */
 }
 
 .no-activity {
-    padding: 15px;
-    color: #999;
+    padding: 10px; /* Reduced padding for compactness */
+    color: #999; /* Consistent lower contrast for secondary info */
+    text-align: center;
+    background-color: #f9f9f9; /* Light background for contrast */
+    border-radius: 8px;
 }
-
-
-
-
 </style>
+
+
+
 
 <ul class="activity-feed">
     {% for activity in activities %}
         <li class="activity-item">
-            <div class="activity-details">
+            <div class="activity-icon-container">
                 <span class="activity-icon">
                     {% if activity.type == 'creation' %}
                         <i class="fas fa-plus-circle"></i>
@@ -59,10 +70,11 @@
                         <i class="fas fa-pencil-alt"></i>
                     {% endif %}
                 </span>
-                <div class="activity-content">
-                    <span class="activity-description">{{ activity.description }}</span>
-                    <span class="activity-timestamp">{{ activity.timestamp }}</span>
-                </div>
+            </div>
+            <div class="activity-content">
+                <p class="activity-description" style="font-weight: 500;">{{ activity.description }}</p>
+
+                <small class="activity-timestamp">{{ activity.timestamp }}</small>
             </div>
         </li>
     {% empty %}
