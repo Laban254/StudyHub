@@ -121,9 +121,13 @@ def handle_share_notes(request, form):
         return JsonResponse({'success': False, 'errors': form.errors}, status=400)
 
 
-class NotesDetailView(generic.DetailView):
-    model = Note
-    template_name = 'studyApp/notes_detail.html'
+# class NotesDetailView(generic.DetailView):
+#     model = Note
+#     template_name = 'studyApp/notes_detail.html'
+
+def notes_detail(request, pk):
+    note = get_object_or_404(Note, pk=pk)
+    return render(request, 'notes_detail.html', {'note': note})
 
 @require_POST
 def toggle_favorite(request, note_id):

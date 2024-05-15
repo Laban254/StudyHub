@@ -1,23 +1,21 @@
-{% extends 'base.html' %} 
-{% load static %} 
+{% extends 'base.html' %}
+{% load static %}
 {% block content %}
-
 <section class="container text-center">
     <div class="content-section p-4 mt-5">
         <div class="m-3">
-            <h2 class="fw-bold text-primary display-4">{{ notes.title }}</h2>
+            <h3 class="fw-bold text-primary display-4">{{ note.title }}</h3>
         </div>
 
         <hr class="my-4">
 
         <div class="description px-5">
-            <p class="lead text-muted">{{ notes.description.html | safe }}</p>
+            <p class="lead text-muted">{{ note.description.html | safe }}</p>
         </div>
 
         <hr class="my-4">
     </div>
 </section>
-
 <style>
     .content-section {
         background-color: #f8f9fa;
@@ -29,5 +27,5 @@
         font-size: 1.1rem;
     }
 </style>
-
 {% endblock content %}
+

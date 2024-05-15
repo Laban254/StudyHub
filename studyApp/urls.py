@@ -22,7 +22,7 @@ urlpatterns = [
     # this path takes one to a specific note and delete's it
     path('delete_note/<int:pk>/', delete_note, name="delete_note"),
     # this path references a generic view hence '.as_view'
-    path('notes_view/<int:pk>/', NotesDetailView.as_view(), name="notes_detail"),
+    path('notes_view/<int:pk>/', notes_detail, name="notes_detail"),
     path('edit_reminder/<int:note_id>/', edit_reminder, name='edit_reminder'),
     path('delete_reminder/<int:note_id>/', delete_reminder, name='delete_reminder'),
 
