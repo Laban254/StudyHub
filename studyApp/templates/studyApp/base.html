@@ -89,14 +89,13 @@
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  <i class="bi bi-person-circle"></i> Profile
+                  <i class="bi bi-person-circle"></i> {{request.user.username }}
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a
+                  {% comment %} <a
                     class="dropdown-item"
                     href="{% url 'studyApp:reset_password' %}"
-                    ><i class="bi bi-gear"></i> Settings</a
-                  >
+                    ><i class="bi bi-gear"></i> Settings</a> {% endcomment %}
                 </div>
               </li>
 
@@ -106,6 +105,11 @@
                 >
               </li>
               {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'studyApp:about' %}"
+                  ><i ></i> About</a
+                >
+              </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'studyApp:registration' %}"
                   ><i class="bi bi-person-plus"></i> Register</a

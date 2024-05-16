@@ -16,6 +16,8 @@ urlpatterns = [
         template_name='password_reset_form.html'), name='password_reset_confirm'),
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(
         template_name='password_reset_done.html'), name='password_reset_complete'),
+
+    path('about/', About.as_view(), name="about"),
     
      path('notes/', notes, name="notes"),
      path('edit-note/<int:pk>/', edit_note, name='edit_note'),

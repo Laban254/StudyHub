@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  /* Modern styling for the About page */
+  .about-section {
+    padding: 80px 0;
+    background-image: url("{% static 'images/about.webp' %}");
+    background-size: cover;
+    background-position: center;
+    color: #fff; /* Text color on dark background */
+  }
+
+  .about-title {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+  }
+
+  .about-description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .contact-section {
+    padding: 80px 0;
+    background-color: #f8f9fa; /* Light background color */
+  }
+
+  .contact-title {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+
+  .contact-info {
+    font-size: 1.1rem;
+  }
+
+  .contact-info li {
+    margin-bottom: 10px;
+  }
+
+  .contact-info li:last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+<section class="about-section text-center">
+  <div class="container">
+    <h2 class="about-title">Welcome to StudyHub</h2>
+    <p class="lead about-description">Empowering learners with innovative tools and resources for effective studying.</p>
+    <p class="about-description">At StudyHub, we're passionate about making the learning journey enjoyable and productive. Our platform is designed to simplify study tasks, enhance organization, and boost productivity.</p>
+    <p class="about-description">Join us as we revolutionize the way you study and unlock your full potential.</p>
+  </div>
+</section>
+
+<section class="contact-section text-center">
+  <div class="container">
+    <h2 class="contact-title">Contact Us</h2>
+    <p class="lead contact-info">Got questions or feedback? We're here to help!</p>
+    <ul class="list-unstyled contact-info">
+      <li>
+        <i class="bi bi-envelope-fill"></i>
+        <a href="mailto:info@studyHub.com">info@studyHub.com</a>
+      </li>
+      <li>
+        <i class="bi bi-phone-fill"></i>
+        <a href="tel:+254796200725">+254 796 200 725</a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+{% endblock content %}
