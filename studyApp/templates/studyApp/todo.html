@@ -1,11 +1,13 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
 
-<div class="container">
-    <!-- Button to trigger the Create Todo Modal -->
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+<section class="vh-90 gradient-custom-2">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center ">
+      <div class="col-md-12 col-xl-10">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createTodoModal">
             Create Todo
         </button>
@@ -35,53 +37,95 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success">Create</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+        <div class="card mask-custom">
+          <div class="card-body p-4">
+            
 
-    {% if todos %}
-        <div class="table-responsive mt-4">
-            <table class="table table-striped table-bordered table-hover">
-                <thead class="thead-dark">
+            <div class="text-center pt-3 pb-2">
+              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-todo-list/check1.webp"
+                alt="Check" width="60">
+              <h2 class="my-4">My Todo-s</h2>
+            </div>
+
+            {% if todos %}
+                <table class="table mb-0">
+                  <thead>
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Actions</th> <!-- Changed to 'Actions' for better clarity -->
+                      <th scope="col">Title</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Actions</th>
                     </tr>
-                </thead>
-                <tbody>
+                  </thead>
+                  <tbody>
                     {% for todo in todos %}
-                        <tr>
-                            <th scope="row">{{ forloop.counter }}</th>
-                            <td>{{ todo.title }}</td>
-                            <td>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckTodo{{ forloop.counter }}" {% if todo.is_finished %}checked{% endif %}>
-                                    <label class="form-check-label" for="flexCheckTodo{{ forloop.counter }}">
-                                        Mark as Completed
-                                    </label>
-                                </div>
-                            </td>
-                            <td>
-                                <a href="{% url 'studyApp:delete_todo' todo.id %}" class="btn btn-danger" role="button">
-                                    Delete <!-- Changed to button for consistency -->
-                                </a>
-                            </td>
+                        <tr class="fw-normal">
+                          <td class="align-middle">{{ todo.title }}</td>
+                          <td class="align-middle">
+                              <div class="form-check">
+                                  <input class="form-check-input" type="checkbox" value="" id="flexCheckTodo{{ forloop.counter }}" {% if todo.is_finished %}checked{% endif %}>
+                                  <label class="form-check-label" for="flexCheckTodo{{ forloop.counter }}">
+                                      Mark as Completed
+                                  </label>
+                              </div>
+                          </td>
+                          <td class="align-middle">
+                              <a href="{% url 'studyApp:delete_todo' todo.id %}" class="btn btn-danger" role="button">
+                                  Delete
+                              </a>
+                          </td>
                         </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                  </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-info mt-4" role="alert">
+                    No tasks found. Create new tasks using the 'Create Todo' button above.
+                </div>
+            {% endif %}
+
+          </div>
         </div>
-    {% else %}
-        <div class="alert alert-info mt-4" role="alert">
-            No tasks found! Create new tasks using the 'Create Todo' button above.
-        </div>
-    {% endif %}
-</div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+
+
+.card-body {
+  color: black;
+}
+
+.table {
+  background-color: white;
+}
+
+.table th, .table td {
+  color: black;
+}
+
+.form-check-label {
+  color: black;
+}
+
+.btn-primary, .btn-success, .btn-danger, .btn-secondary {
+  background-color: rgba(24, 24, 24, 0.8);
+  border-color: rgba(24, 24, 24, 0.8);
+}
+
+.btn-primary:hover, .btn-success:hover, .btn-danger:hover, .btn-secondary:hover {
+  background-color: rgba(24, 24, 24, 1);
+  border-color: rgba(24, 24, 24, 1);
+}
+</style>
 
 {% endblock content %}
