@@ -3,72 +3,277 @@
 
 {% block content %}
 <style>
-  /* Modern styling for the About page */
-  .about-section {
-    padding: 80px 0;
+  /* General styles */
+  body {
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 1200px;
+  }
+
+  /* Hero section with modern design */
+  .hero {
     background-image: url("{% static 'images/about.webp' %}");
     background-size: cover;
     background-position: center;
-    color: #fff; /* Text color on dark background */
+    color: #fff;
+    padding: 270px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
   }
 
-  .about-title {
-    font-size: 2.5rem;
-    margin-bottom: 40px;
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.5);
+    animation: brighten 3s ease-in-out forwards;
   }
 
-  .about-description {
-    font-size: 1.2rem;
-    line-height: 1.6;
+  .hero h1, .hero p, .hero .btn-primary {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 {
+    font-size: 4rem;
     margin-bottom: 20px;
+    font-weight: bold;
+    animation: fadeInDown 1s ease-in-out;
   }
 
-  .contact-section {
-    padding: 80px 0;
-    background-color: #f8f9fa; /* Light background color */
+  .hero p {
+    font-size: 1.5rem;
+    line-height: 1.8;
+    margin-bottom: 40px;
+    animation: fadeInUp 1s ease-in-out;
   }
 
-  .contact-title {
-    font-size: 2rem;
-    margin-bottom: 30px;
+  .hero .btn-primary {
+    background-color: #ff6f61;
+    border: none;
+    font-size: 1.25rem;
+    padding: 15px 30px;
+    border-radius: 50px;
+    transition: background-color 0.3s ease-in-out;
+    animation: fadeInUp 1.2s ease-in-out;
   }
 
-  .contact-info {
-    font-size: 1.1rem;
+  .hero .btn-primary:hover {
+    background-color: #ff4b47;
   }
 
-  .contact-info li {
+  @keyframes brighten {
+    0% {
+      background: rgba(0, 0, 0, 0.5);
+    }
+    100% {
+      background: rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Features sections with modern design */
+  .features {
+    padding: 60px 0;
+    text-align: center;
+  }
+
+  .feature {
+    margin-bottom: 40px;
+    animation: fadeIn 1s ease-in-out;
+  }
+
+  .feature i {
+    font-size: 3rem;
+    color: #ff6f61;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .feature:hover i {
+    transform: scale(1.1);
+  }
+
+  .feature h3 {
+    font-size: 1.75rem;
     margin-bottom: 10px;
   }
 
-  .contact-info li:last-child {
-    margin-bottom: 0;
+  .feature p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  .features .row {
+    justify-content: center;
+  }
+
+  .feature-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Contact Us section */
+  .contact-section {
+    padding: 10px 0;
+    text-align: center;
+    font-size: 0.85rem;
+  }
+
+  .contact-section .contact-item {
+    margin-bottom: 5px;
+  }
+
+  .contact-section .contact-item i {
+    font-size: 1rem;
+    color: #007bff;
+  }
+
+  .contact-section .contact-item p a {
+    font-size: 0.85rem;
+  }
+
+  /* Footer */
+  .footer {
+    background-color: #343a40;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+  }
+
+  .footer a {
+    color: #ff6f61;
+    text-decoration: none;
+    transition: color 0.3s ease-in-out;
+  }
+
+  .footer a:hover {
+    color: #ff4b47;
   }
 </style>
 
-<section class="about-section text-center">
-  <div class="container">
-    <h2 class="about-title">Welcome to StudyHub</h2>
-    <p class="lead about-description">Empowering learners with innovative tools and resources for effective studying.</p>
-    <p class="about-description">At StudyHub, we're passionate about making the learning journey enjoyable and productive. Our platform is designed to simplify study tasks, enhance organization, and boost productivity.</p>
-    <p class="about-description">Join us as we revolutionize the way you study and unlock your full potential.</p>
+<section class="hero d-flex align-items-center justify-content-center">
+  <div class="hero-overlay"></div>
+  <div class="container text-center">
+    <h1>Empower Your Learning Journey</h1>
+    <p>Join StudyHub and unlock a world of innovative tools and resources to study effectively.</p>
+    <a href="{% url 'studyApp:registration' %}" class="btn btn-primary">Get Started Today</a>
   </div>
 </section>
 
-<section class="contact-section text-center">
+<section class="features bg-light">
   <div class="container">
-    <h2 class="contact-title">Contact Us</h2>
-    <p class="lead contact-info">Got questions or feedback? We're here to help!</p>
-    <ul class="list-unstyled contact-info">
-      <li>
+    <h2 class="mb-5">Studies' Essentials</h2>
+    <div class="row">
+      <div class="col-md-4 feature">
+        <div class="feature-card">
+          <i class="bi bi-pencil-square"></i>
+          <h3>Notes</h3>
+          <p>Create Notes to Remember Anything, Anytime!</p>
+        </div>
+      </div>
+      <div class="col-md-4 feature">
+        <div class="feature-card">
+          <i class="bi bi-check2-square"></i>
+          <h3>Homework</h3>
+          <p>Stay On Top of Your Assignments with Homework Tracker!</p>
+        </div>
+      </div>
+      <div class="col-md-4 feature">
+        <div class="feature-card">
+          <i class="bi bi-list-task"></i>
+          <h3>To Do</h3>
+          <p>Stay Organized and Productive with To-Do Lists!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="container">
+    <h2 class="mb-5">Studies' References</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-4 feature">
+        <div class="feature-card">
+          <i class="bi bi-book"></i>
+          <h3>Books</h3>
+          <p>Explore a World of Knowledge with Our Book Menu!</p>
+        </div>
+      </div>
+      <div class="col-md-4 feature">
+        <div class="feature-card">
+          <i class="bi bi-journal-bookmark"></i>
+          <h3>Dictionary</h3>
+          <p>Instant Word Definitions at Your Fingertips!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-auto contact-item">
         <i class="bi bi-envelope-fill"></i>
-        <a href="mailto:info@studyHub.com">info@studyHub.com</a>
-      </li>
-      <li>
-        <i class="bi bi-phone-fill"></i>
-        <a href="tel:+254796200725">+254 796 200 725</a>
-      </li>
-    </ul>
+        <p><a href="mailto:info@studyHub.com">info@studyHub.com</a></p>
+      </div>
+      <div class="col-auto contact-item">
+        <i class="bi bi-facebook"></i>
+        <p><a href="https://www.facebook.com/StudyHub">Facebook</a></p>
+      </div>
+      <div class="col-auto contact-item">
+        <i class="bi bi-twitter"></i>
+        <p><a href="https://twitter.com/StudyHub">Twitter</a></p>
+      </div>
+      <div class="col-auto contact-item">
+        <i class="bi bi-instagram"></i>
+        <p><a href="https://www.instagram.com/StudyHub">Instagram</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="footer">
+  <div class="container">
+    <p>@StudyHub Developed with ❤️ by Kibe</p>
   </div>
 </section>
 
