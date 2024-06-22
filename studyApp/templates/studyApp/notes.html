@@ -2,6 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load widget_tweaks %}
  <!-- django-quill-editor Media -->
 {% include 'django_quill/media.html' %}
 
@@ -100,6 +101,38 @@
     border-color: #0056b3;
 }
 
+/* Custom styles for pagination */
+        .pagination {
+            margin-top: 20px; /* Adjust as needed */
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #f8f9fa; /* Example background color */
+            padding: 10px 0; /* Adjust padding as needed */
+            border-top: 1px solid #dee2e6; /* Example border */
+        }
+        .pagination li {
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .pagination li.active span {
+            color: #fff;
+            background-color: #007bff; /* Example active background color */
+            border-color: #007bff; /* Example active border color */
+        }
+        .pagination li a {
+            color: #007bff; /* Example link color */
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid #007bff; /* Example border color */
+        }
+        .pagination li a:hover {
+            background-color: #007bff; /* Example hover background color */
+            color: #fff;
+        }
+
 
 </style>
 
@@ -120,8 +153,8 @@
             <!-- Content for creating notes, search form, total notes count, and modal -->
             <!-- Button to trigger the modal -->
             <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4">
-                <button type="button" class="btn btn-sm btn-primary btn-rounded" data-toggle="modal" data-target="#createNotesModal">
-                    <i class="fas fa-plus me-1"></i> Create Notes
+                <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="modal" data-target="#createNotesModal">
+                    <i class="fas fa-plus me-1 btn btn-primary btn-sm"></i> Create Notes
                 </button>
             </div>
             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -137,7 +170,7 @@
                 </form>
 
                 <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         Sort By
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="sortDropdown">
@@ -160,7 +193,7 @@
             <div class="modal fade" id="createNotesModal" tabindex="-1" role="dialog" aria-labelledby="createNotesModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                     <div class="modal-content">
-                        <div class="modal-header bg-dark text-white">
+                        <div class="modal-header bg-info text-white">
                             <h5 class="modal-title" id="createNotesModalLabel">Create Notes</h5>
                             <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
                         </div>
@@ -168,28 +201,34 @@
                             {% csrf_token %}
                             <div class="modal-body">
                                 <input type="hidden" name="create_note" value="1">
-                                <div class="mb-3">
+                                <!-- Title Input -->
+                                <div class="form-group mb-3">
                                     <label for="title" class="form-label">Title</label>
-                                    <input type="text" class="form-control" id="title" name="title" placeholder="Enter title" required>
+                                    <input type="text" class="form-control bg-light" id="title" name="title" placeholder="Enter title" required>
                                 </div>
-                                <div class="mb-3">
+                                <!-- Description Input -->
+                                <div class="form-group mb-3">
                                     <label for="description" class="form-label">Description</label>
-                                    {{ create_notes_form.description }}
+                                    {{ create_notes_form.description|add_class:"form-control bg-light" }}
                                 </div>
-                                <div class="mb-3">
+                                <!-- Reminder Input -->
+                                <div class="form-group mb-3">
                                     <label for="reminder" class="form-label">Reminder</label>
-                                    {{ create_notes_form.reminder }}
+                                    {{ create_notes_form.reminder|add_class:"form-control bg-light" }}
                                 </div>
                                 <!-- Add more fields as needed -->
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-success">Create</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <!-- Create Button -->
+                                <button type="submit" class="btn btn-info">Create</button>
+                                <!-- Close Button -->
+                                <button type="button" class="btn" style="background-color: #6c757d; border-color: #6c757d; color: #fff;" data-dismiss="modal">Close</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
+            
 
             <!-- Displaying Notes -->
             <div class="row mt-4" style="margin-bottom: 100px;">
@@ -264,7 +303,7 @@
 
 
             <!-- Pagination -->
-            <div class="footer">
+            <div class="footer fixed-bottom bg-light">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12 d-flex justify-content-center">

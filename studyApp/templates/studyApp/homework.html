@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+{% load widget_tweaks %}
 <!-- django-quill-editor Media -->
 {% include 'django_quill/media.html' %}
 
@@ -126,84 +127,125 @@
         margin-left: 4px;
     }
 
-    .footer {
-        background: linear-gradient(to bottom, ##F0FFFF, ##F0FFFF);
-    position: relative; /* Change fixed to relative */
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #f8f9fa;
-    padding: 10px 0;
-    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-
-    /* Ensure it stays below the content */
-    margin-top: 20px; /* Adjust this value as needed to create space */
-
+    /* Custom styles for pagination */
+        .pagination {
+            margin-top: 20px; /* Adjust as needed */
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #f8f9fa; /* Example background color */
+            padding: 10px 0; /* Adjust padding as needed */
+            border-top: 1px solid #dee2e6; /* Example border */
+        }
+        .pagination li {
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .pagination li.active span {
+            color: #fff;
+            background-color: #007bff; /* Example active background color */
+            border-color: #007bff; /* Example active border color */
+        }
+        .pagination li a {
+            color: #007bff; /* Example link color */
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid #007bff; /* Example border color */
+        }
+        .pagination li a:hover {
+            background-color: #007bff; /* Example hover background color */
+            color: #fff;
+        }
 
     
-}
+
+
 
 </style>
 
 <div class="container">
     
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <button type="button" class="btn btn-sm btn-primary btn-rounded" data-toggle="modal" data-target="#createHomeworkModal">
+        <button type="button" class="btn btn-sm btn-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#createHomeworkModal">
             <i class="fas fa-plus me-1"></i> Create Homework
         </button>
     </div>
-
-    <div class="modal fade" id="createHomeworkModal" tabindex="-1" role="dialog" aria-labelledby="createHomeworkModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+    
+    <div class="modal fade" id="createHomeworkModal" tabindex="-1" aria-labelledby="createHomeworkModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
-                <div class="modal-header bg-dark text-white">
+                <div class="modal-header bg-info text-white">
                     <h5 class="modal-title" id="createHomeworkModalLabel">Create Homework</h5>
-                    <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="POST">
                     {% csrf_token %}
                     <div class="modal-body">
                         {{ form.non_field_errors }}
+                        
+                        <!-- Subject Input -->
                         <div class="mb-3">
-                            <label for="id_subject" class="form-label">Subject</label>
-                            {{ form.subject }}
+                            <label for="{{ form.subject.id_for_label }}" class="form-label">Subject</label>
+                            {{ form.subject|add_class:"form-control bg-light" }}
                         </div>
+    
+                        <!-- Title Input -->
                         <div class="mb-3">
-                            <label for="id_title" class="form-label">Title</label>
-                            {{ form.title }}
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+                            {{ form.title|add_class:"form-control bg-light" }}
                         </div>
+    
+                        <!-- Description Input -->
                         <div class="mb-3">
-                            <label for="id_description" class="form-label">Description</label>
-                            {{ form.description }}
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                            {{ form.description|add_class:"form-control bg-light" }}
                         </div>
+    
+                        <!-- Due Date Input -->
                         <div class="mb-3">
-                            <label for="id_due" class="form-label">Due Date</label>
-                            {{ form.due}}
+                            <label for="{{ form.due.id_for_label }}" class="form-label">Due Date</label>
+                            <div class="input-group">
+                                {{ form.due|add_class:"form-control bg-light" }}
+                                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="id_is_finished" class="form-label">Status</label>
-                            {{ form.is_finished }}
+    
+                        <!-- Status Checkbox -->
+                        <div class="mb-3 form-check">
+                            <input class="form-check-input" type="checkbox" id="{{ form.is_finished.id_for_label }}" name="{{ form.is_finished.html_name }}">
+                            <label class="form-check-label ms-2" for="{{ form.is_finished.id_for_label }}">{{ form.is_finished.label }}</label>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Create</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <!-- Create Button -->
+                        <button type="submit" class="btn btn-info" >Create</button>
+                        <!-- Close Button -->
+                        <button type="button" class="btn" style="background-color: #6c757d; border-color: #6c757d; color: #fff;" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+    
+    
+    
+    
+    
+    
 
     <!-- Display homework -->
     <div class="d-flex justify-content-between align-items-center">
         <div>
-            <h2 class="mt-3 mb-3 text-primary fw-bold">Your Homework</h2>
+            <h2 class="mt-3 mb-3 text-dark fw-bold">Your <span class="text-muted">Homework</span></h2>
+
+
             {% comment %} <a href="{% url 'studyApp:calendar_view' %}">View Homework Deadlines on Calendar</a> {% endcomment %}
         </div>
         <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="toggleSwitch" onchange="toggleHomeworkVisibility()" />
-            <label class="form-check-label" for="toggleSwitch">Show Unfinished</label>
+            <input class="form-check-input" type="checkbox" id="toggleSwitch" onchange="toggleHomeworkVisibility()">
+            <label class="form-check-label" for="toggleSwitch">Show Incomplete</label>
         </div>
 
     </div>
@@ -219,24 +261,25 @@
                     <div class="homework-status">
                         <small class="text-muted">updated {{homework.updated_at}} </small>
                         {% if homework.is_finished %}
-                            <span class="badge badge-success">Finished</span>
+                        <span class="badge badge-primary">Complete</span>
                         {% else %}
-                            <span class="badge badge-secondary">Not Finished</span>
+                        <span class="badge badge-warning">Incomplete</span>
                         {% endif %}
                     </div>
                     
                 </div>
-                 <div class="d-flex">
-                        <a href="{% url 'studyApp:edit_homework' homework.id %}" class="btn btn-sm btn-primary mr-2">
-                            <i class="fas fa-edit"></i> Edit
-                        </a>
-                        <form method="post" action="{% url 'studyApp:delete_homework' homework.id %}" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-danger">
-                                <i class="fas fa-trash-alt"></i> Delete
-                            </button>
-                        </form>
-                    </div>
+                <div class="d-flex">
+                    <a href="{% url 'studyApp:edit_homework' homework.id %}" class="btn btn-sm btn-primary mr-2">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <form method="post" action="{% url 'studyApp:delete_homework' homework.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this homework?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </form>
+                </div>
+                
             </div>
         {% endfor %}
     {% else %}
@@ -247,7 +290,7 @@
 
 
 <!-- Pagination -->
-<div class="footer">
+<div class="footer fixed-bottom bg-light">
     <div class="container">
         <div class="row">
             <div class="col-md-12 d-flex justify-content-center">
@@ -278,6 +321,7 @@
         </div>
     </div>
 </div>
+
 
 
 <script>

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'sweetify',
     # 'schedule',
     'actstream',
+    'widget_tweaks',
     
 
     'crispy_forms',
@@ -98,7 +99,7 @@ WSGI_APPLICATION = 'studyHub.wsgi.application'
 
 LOGIN_URL = '/studyApp/login/'
 
-LOGIN_REDIRECT_URL = '/studyApp/notes/'
+LOGIN_REDIRECT_URL = '/home'
 
 STATIC_URL = '/static/'
 

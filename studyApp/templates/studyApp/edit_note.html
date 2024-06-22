@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load widget_tweaks %}
  <!-- django-quill-editor Media -->
 {% include 'django_quill/media.html' %}
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-lg-12"> <!-- Adjusted width for larger screens -->
+        <div class="col-lg-8">
             <div class="card">
-                <div class="card-header bg-dark">
-                    <h2 class="text-center mb-0 text-white">Edit Note</h2>
+                <div class="card-header bg-info text-white">
+                    <h2 class="text-center mb-0">Edit Note</h2>
                 </div>
                 <div class="card-body">
                     <form method="post" class="needs-validation" novalidate>
@@ -26,7 +27,7 @@
                             {{ form.reminder }}
                         </div>
                         <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Update</button>
+                        <button type="submit" class="btn btn-info">Update</button>
                         <a href="{% url 'studyApp:notes' %}" class="btn btn-secondary ">Close</a>
                     </div>
                     </form>
@@ -35,30 +36,5 @@
         </div>
     </div>
 </div>
-{% endblock %}
 
-<style>
-    /* Custom CSS */
-.modal-content {
-    border-radius: 10px;
-}
-
-.modal-body input[type="text"],
-.modal-body textarea {
-    border-radius: 5px;
-    font-size: 16px;
-    padding: 10px;
-    border: 1px solid #ced4da;
-}
-
-.modal-body input[type="text"]:focus,
-.modal-body textarea:focus {
-    border-color: #4ade80;
-    box-shadow: 0 0 0 0.2rem rgba(74, 222, 128, 0.25);
-}
-
-.modal-body input[type="text"],
-.modal-body textarea {
-    width: 100%; /* Adjust the width as needed */
-}
-</style>
+{%endblock content%}
