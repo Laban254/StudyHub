@@ -387,59 +387,58 @@ def delete_homework(request, pk):
     sweetify.success(request, "Homework deleted successfully")
     return redirect('studyApp:homework')
 
-#TODO
+# todo
 @login_required
 def todo(request):
-    if request.method == 'POST':
-        form= TodoForm(request.POST)
+    if request.method == 'POST' and not request.is_ajax():
+        form = TodoForm(request.POST)
         if form.is_valid():
             try:
                 finished = request.POST['is_finished']
-                # If the checkbox has been clicked
-                if finished == 'on':
-                    finished = True
-                # if the checkbox has not been clicked
-                else:
-                    finished = False
-            except:
+                finished = True if finished == 'on' else False
+            except KeyError:
                 finished = False
-            # List all the form fields as POST requests
             todos = Todo(
-                user = request.user,
-                title = request.POST['title'],
-                is_finished = finished
+                user=request.user,
+                title=request.POST['title'],
+                is_finished=finished
             )
             todos.save()
-        messages.success(request, f"todo added successfully")
+            messages.success(request, "Todo added successfully")
+        else:
+            messages.error(request, "Error adding todo")
     else:
         form = TodoForm()
+
     todos = Todo.objects.filter(user=request.user)
-    if len(todos) == 0:
-        todos_done = True
-    # if the number of todos is 1 or more then they are incomplete
-    else:
-        todos_done = False
-    context={
-        'todos':todos,
-        'todos_done':todos_done,
-        'form':form,
+    todos_done = len(todos) == 0
+
+    context = {
+        'todos': todos,
+        'todos_done': todos_done,
+        'form': form,
     }
     return render(request, 'todo.html', context)
 
 @login_required
-def update_todo(request, pk):
-    todo = Todo.objects.get(id=pk)
-    # if the status checkbox is ticked then the assignment is completed
-    if todo.is_finished == True:
-        todo.is_finished = False
-    else:
-        todo.is_finished = True
-    todo.save()
-    return redirect('studyApp:todo')
+def update_todo_status(request):
+    if request.method == 'POST':
+        todo_id = request.POST.get('todo_id')
+        is_checked = request.POST.get('is_checked') == 'true'
+        
+        try:
+            todo = Todo.objects.get(id=todo_id, user=request.user)
+            todo.is_finished = is_checked
+            todo.save()
+            return JsonResponse({'status': 'success'})
+        except Todo.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Todo not found'}, status=404)
 
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+
+@login_required
 def delete_todo(request, pk):
-    # Use the correct model name and access its objects
-    todo_instance = get_object_or_404(Todo, id=pk)
+    todo_instance = get_object_or_404(Todo, id=pk, user=request.user)
     todo_instance.delete()
     return redirect('studyApp:todo')
 

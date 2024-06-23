@@ -1,37 +1,36 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load crispy_forms_tags %}
 {% block content %}
 {% load widget_tweaks %}
 
 <section class="vh-90 gradient-custom-2">
-  <div class="container  h-100">
+  <div class="container h-100">
     <div class="row d-flex justify-content-center align-items-center">
       <div class="col-md-12 col-xl-10">
         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
           <button type="button" class="btn btn-sm btn-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#createTodoModal">
-            <i class="fas fa-plus me-1 btn btn-primary btn-sm"></i>Create Todo
+            <i class="fas fa-plus me-1"></i>Create Todo
           </button>
         </div>
 
         <!-- Create Todo Modal -->
         <div class="modal fade" id="createTodoModal" tabindex="-1" aria-labelledby="createTodoModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
               <div class="modal-header bg-info text-white">
                 <h5 class="modal-title" id="createTodoModalLabel">Create Todo</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <form method="POST">
+              <form method="POST" id="createTodoForm" action="{% url 'studyApp:todo' %}">
                 {% csrf_token %}
                 <div class="modal-body">
                   <div class="mb-3">
                     <label for="id_title" class="form-label">Title</label>
                     {{ form.title|add_class:"form-control bg-light" }}
                   </div>
-                  <div class="mb-3">
-                    <label for="is_finished" class="form-label">Completed</label>
-                    {{ form.is_finished|add_class:"form-check-input" }}
+                  <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="id_is_finished" name="is_finished">
+                    <label class="form-check-label" for="id_is_finished">Completed</label>
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -47,7 +46,7 @@
           <div class="card-body p-4">
             <div class="text-center pt-3 pb-2">
               <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-todo-list/check1.webp" alt="Check" width="60">
-              <h2 class="my-4">My Todo-s</h2>
+              <h2 class="my-4">My Todos</h2>
             </div>
 
             {% if todos %}
@@ -90,38 +89,9 @@
   </div>
 </section>
 
-<style>
-.card-body {
-  color: black;
-}
-
-.table {
-  background-color: white;
-}
-
-.table th, .table td {
-  color: black;
-}
-
-.form-check-label {
-  color: black;
-}
-
-
-.modal-header {
-  background-color: #17a2b8;
-  color: #fff;
-}
-
-.modal-footer .btn-success {
-  background-color: #28a745;
-  border-color: #28a745;
-}
-
-.modal-footer .btn-secondary {
-  background-color: #6c757d;
-  border-color: #6c757d;
-}
-</style>
-
 {% endblock content %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+{% endblock scripts %}
