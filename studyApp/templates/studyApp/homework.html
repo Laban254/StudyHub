@@ -257,7 +257,7 @@
                     <div class="homework-title">
                         <a href="{% url 'studyApp:homework_detail' homework.id %}">{{ homework.title }}</a>
                     </div>
-                    <div class="homework-description">{{ homework.subject }}</div>
+                    {% comment %} <div class="homework-description">{{ homework.subject }}</div> {% endcomment %}
                     <div class="homework-status">
                         <small class="text-muted">updated {{homework.updated_at}} </small>
                         {% if homework.is_finished %}

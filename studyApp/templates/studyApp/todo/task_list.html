@@ -1,0 +1,244 @@
+<!-- templates/todo_app/task_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<style> 
+
+    .modal-content {
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 15px; /* Reduce padding */
+    }
+    
+    .modal-body input[type="text"],
+    .modal-body textarea,
+    .modal-body select {
+        border-radius: 5px;
+        font-size: 16px;
+        padding: 8px; /* Reduce padding */
+        border: 1px solid #ced4da;
+        width: 100%;
+        margin-bottom: 10px; /* Reduce margin */
+    }
+    
+    .modal-body input[type="text"]:focus,
+    .modal-body textarea:focus,
+    .modal-body select:focus {
+        border-color: #4ade80;
+        box-shadow: 0 0 0 0.2rem rgba(74, 222, 128, 0.25);
+    }
+    
+    .modal-header,
+    .modal-footer {
+        padding: 8px 15px; /* Reduce padding */
+        border-bottom: 1px solid #e9ecef;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .modal-footer {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 1.2rem; /* Reduce font size */
+    }
+    
+    .btn-close:hover {
+        color: #dc3545;
+    }
+    
+    
+</style>
+<div class="container">
+  
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="mb-0">Your Todos <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-todo-list/check1.webp" alt="Check" width="60"> </h1>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#createTaskModal">Create Todo</button>
+    </div>
+    
+<div class="container">
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Priority</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.title }}</td>
+                <td>{{ task.get_priority_display }}</td>
+                <td>{{ task.due_date }}</td>
+                <td>{{ task.completed|yesno:"Completed,Not Completed" }}</td>
+                <td>
+                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#viewTaskModal-{{ task.id }}">View</button>
+                    <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editTaskModal-{{ task.id }}">Edit</button>
+                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteTaskModal-{{ task.id }}">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+  
+<div class="modal fade" id="createTaskModal" tabindex="-1" role="dialog" aria-labelledby="createTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="createTaskModalLabel">Create Task</h5>
+                <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="createTaskForm" method="post" action="{% url 'studyApp:task_create' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group mb-2">
+                        <label for="id_title" class="form-label">Title</label>
+                        {{ form.title }}
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="id_description" class="form-label">Description</label>
+                        {{ form.description }}
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="id_due_date" class="form-label">Due Date</label>
+                        {{ form.due_date }}
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="id_priority" class="form-label">Priority</label>
+                        {{ form.priority }}
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="id_category" class="form-label">Category</label>
+                        {{ form.category }}
+                    </div>
+                    {% comment %} <div class="form-group mb-2">
+                        <label for="id_tags" class="form-label">Tags</label>
+                        {{ form.tags }}
+                    </div> {% endcomment %}
+                    <div class="form-check mb-2">
+                        {{ form.completed }}
+                        <label for="{{ form.completed.id_for_label }}" class="form-check-label">{{ form.completed.label }}</label>
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info">Save</button>
+                    <button type="button" class="btn" style="background-color: #6c757d; border-color: #6c757d; color: #fff;" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% for task in tasks %}
+<!-- View Task Modal -->
+<div class="modal fade" id="viewTaskModal-{{ task.id }}" tabindex="-1" aria-labelledby="viewTaskModalLabel-{{ task.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewTaskModalLabel-{{ task.id }}">View Task</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Title:</strong> {{ task.title }}</p>
+                <p><strong>Description:</strong> {{ task.description }}</p>
+                <p><strong>Priority:</strong> {{ task.get_priority_display }}</p>
+                <p><strong>Due Date:</strong> {{ task.due_date }}</p>
+                <p><strong>Status:</strong> {{ task.completed|yesno:"Completed,Not Completed" }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Task Modal -->
+<!-- Edit Task Modal -->
+<div class="modal fade" id="editTaskModal-{{ task.id }}" tabindex="-1" aria-labelledby="editTaskModalLabel-{{ task.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="editTaskModalLabel-{{ task.id }}">Edit Task</h5>
+                <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editTaskForm-{{ task.id }}" method="post" action="{% url 'studyApp:task_update' task.id %}">
+                    {% csrf_token %}
+                    <div class="form-group mb-2">
+                        <label for="id_title" class="form-label">Title</label>
+                        <input type="text" id="id_title" name="title" class="form-control" value="{{ task.title }}">
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="id_description" class="form-label">Description</label>
+                        <textarea id="id_description" name="description" class="form-control">{{ task.description }}</textarea>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="id_due_date" class="form-label">Due Date</label>
+                        <input type="text" id="id_due_date" name="due_date" class="form-control" value="{{ task.due_date }}">
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="id_priority" class="form-label">Priority</label>
+                        <select id="id_priority" name="priority" class="form-control">
+                            {% for value, display_name in form.fields.priority.choices %}
+                                <option value="{{ value }}" {% if value == task.priority %} selected {% endif %}>{{ display_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="id_category" class="form-label">Category</label>
+                        <input type="text" id="id_category" name="category" class="form-control" value="{{ task.category }}">
+                    </div>
+                    <div class="form-check mb-2">
+                        <input type="checkbox" id="id_completed" name="completed" class="form-check-input" {% if task.completed %} checked {% endif %}>
+                        <label for="id_completed" class="form-check-label">Completed</label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Delete Task Modal -->
+<div class="modal fade" id="deleteTaskModal-{{ task.id }}" tabindex="-1" aria-labelledby="deleteTaskModalLabel-{{ task.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteTaskModalLabel-{{ task.id }}">Confirm Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the task "{{ task.title }}"?</p>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteTaskForm-{{ task.id }}" method="post" action="{% url 'studyApp:task_delete' task.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

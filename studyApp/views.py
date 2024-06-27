@@ -389,58 +389,67 @@ def delete_homework(request, pk):
 
 # todo
 @login_required
-def todo(request):
-    if request.method == 'POST' and not request.is_ajax():
-        form = TodoForm(request.POST)
-        if form.is_valid():
-            try:
-                finished = request.POST['is_finished']
-                finished = True if finished == 'on' else False
-            except KeyError:
-                finished = False
-            todos = Todo(
-                user=request.user,
-                title=request.POST['title'],
-                is_finished=finished
-            )
-            todos.save()
-            messages.success(request, "Todo added successfully")
-        else:
-            messages.error(request, "Error adding todo")
-    else:
-        form = TodoForm()
+def task_list(request):
+    tasks = Task.objects.filter(author=request.user)
+    form = TaskForm()
+    return render(request, 'todo/task_list.html', {'tasks': tasks, 'form': form})
 
-    todos = Todo.objects.filter(user=request.user)
-    todos_done = len(todos) == 0
+@login_required
+def task_create(request):
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            form.instance.author = request.user  # Set the author before saving
+            task = form.save()  # Save the form which internally calls form.save(commit=True)
+            return redirect('studyApp:task_list')
+    else:
+        form = TaskForm()
+    
+    return render(request, 'studyApp/task_form.html', {'form': form})
+
+
+@login_required
+def task_update(request, pk=None):
+    # Retrieve the task object from the database
+    task = get_object_or_404(Task, id=pk)
+
+    # Check if the current user is the author of the task
+    if task.author != request.user:
+        return redirect('studyApp:task_list')  # or any appropriate redirect
+
+    if request.method == 'POST':
+        # Create the form instance with the POST data and the task instance
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            # Save the form to update the task object
+            form.save()
+            messages.success(request, "Task updated successfully")
+            return redirect('studyApp:task_list')  # Redirect to task list or another appropriate page
+        else:
+            messages.error(request, "Failed to update task. Please correct the errors.")
+    else:
+        # Create the form instance with the task instance (no POST data)
+        form = TaskForm(instance=task)
 
     context = {
-        'todos': todos,
-        'todos_done': todos_done,
         'form': form,
+        'task': task,
     }
-    return render(request, 'todo.html', context)
+    return render(request, 'update_task.html', context)
+
 
 @login_required
-def update_todo_status(request):
+def task_delete(request, task_id):
+    task = get_object_or_404(Task, id=task_id, author=request.user)
     if request.method == 'POST':
-        todo_id = request.POST.get('todo_id')
-        is_checked = request.POST.get('is_checked') == 'true'
+        task.delete()
+        return redirect('studyApp:task_list')
+    return redirect('studyApp:task_list')
+
+
         
-        try:
-            todo = Todo.objects.get(id=todo_id, user=request.user)
-            todo.is_finished = is_checked
-            todo.save()
-            return JsonResponse({'status': 'success'})
-        except Todo.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Todo not found'}, status=404)
 
-    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
-@login_required
-def delete_todo(request, pk):
-    todo_instance = get_object_or_404(Todo, id=pk, user=request.user)
-    todo_instance.delete()
-    return redirect('studyApp:todo')
 
 #BOOKS
 @login_required
@@ -524,4 +533,3 @@ def dictionary(request):
             'form':form,
         }
     return render(request, 'dictionary.html', context)
-
