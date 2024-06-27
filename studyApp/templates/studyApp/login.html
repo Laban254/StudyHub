@@ -11,6 +11,18 @@
           <h2 class="card-title text-center mb-4"><i class="fas fa-user-circle mr-2"></i> Log In</h2>
           <form method="POST" class="needs-validation" novalidate>
             {% csrf_token %}
+            {% if form.errors %}
+              <div class="alert alert-danger">
+                <strong>Error!</strong> Please correct the following errors:
+                <ul>
+                  {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
             <div class="form-group">
               {{ form.username|as_crispy_field }}
             </div>
