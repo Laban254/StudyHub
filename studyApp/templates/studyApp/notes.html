@@ -205,12 +205,105 @@
                  font-size: 14px;
              }
          }
+
+         .sidebar {
+            border-right: 1px solid #dee2e6;
+            padding-right: 15px;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+       .sidebar h4 {
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+       .sidebar ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+       .sidebar ul li {
+            margin-bottom: 0.5rem;
+        }
+
+       .sidebar ul li a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+       .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
          
          
 </style>
 
 <div class="container-fluid">
-    
+    <div class="row">
+    <div class="col-md-3 sidebar">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4">
+            <button type="button" class="btn btn-sm btn-primary rounded-pill" data-toggle="modal" data-target="#createNotesModal">
+                <i class="fas fa-plus me-1 btn btn-primary btn-sm"></i>Create Note
+            </button>
+        </div>
+        <!-- Modal -->
+<div class="modal fade" id="createNotesModal" tabindex="-1" role="dialog" aria-labelledby="createNotesModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+    <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+            <h5 class="modal-title" id="createNotesModalLabel">Create Notes</h5>
+            <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="modal-body">
+                <input type="hidden" name="create_note" value="1">
+                <!-- Title Input -->
+                <div class="form-group mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control bg-light" id="title" name="title" placeholder="Enter title" required>
+                </div>
+                <!-- Description Input -->
+                <div class="form-group mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    {{ create_notes_form.description|add_class:"form-control bg-light" }}
+                </div>
+                <!-- Reminder Input -->
+                <div class="form-group mb-3">
+                    <label for="reminder" class="form-label">Reminder</label>
+                    {{ create_notes_form.reminder|add_class:"form-control bg-light" }}
+                </div>
+                <!-- Add more fields as needed -->
+            </div>
+            <div class="modal-footer">
+                <!-- Create Button -->
+                <button type="submit" class="btn btn-info">Create</button>
+                <!-- Close Button -->
+                <button type="button" class="btn" style="background-color: #6c757d; border-color: #6c757d; color: #fff;" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+<h4>Notes Titles</h4>
+<form method="GET" class="mb-3">
+<div class="input-group">
+    <input type="text" class="form-control" placeholder="Search titles..." name="q" value="{{ request.GET.q }}">
+    <button class="btn btn-outline-primary" type="submit">
+        <i class="fas fa-search"></i>
+    </button>
+</div>
+</form>
+<ul>
+{% for note in page_obj %}
+<li><a href="{% url 'studyApp:notes_detail' note.id %}" class="text-decoration-none text-dark">
+    {{ note.title }}
+</a></li>
+{% endfor %}
+</ul>
+
+    </div>
         <div class="col-md-9">
             {% if page_obj|length == 0 %}
         <div class="col-lg-12 col-md-12 col-sm-12" style="font-size: 20px;">

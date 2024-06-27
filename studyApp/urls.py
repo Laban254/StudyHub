@@ -40,9 +40,10 @@ urlpatterns = [
     path('homework_view/<int:pk>/', HomeworkDetailView.as_view(), name="homework_detail"),
     path('calendar_view/', calendar_view, name="calendar_view"),
 
-    path('todos/', todo, name='todo'),
-    path('update_todo_status/', update_todo_status, name='update_todo_status'),
-    path('delete_todo/<int:pk>/', delete_todo, name='delete_todo'),
+    path('', task_list, name='task_list'),
+    path('task/create/', task_create, name='task_create'),
+    path('task/<int:task_id>/edit/', task_update, name='task_update'),
+    path('task/<int:task_id>/delete/', task_delete, name='task_delete'),
 
 
     path('books/', books, name="books"),
