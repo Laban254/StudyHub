@@ -109,7 +109,7 @@ LOGIN_URL = '/studyApp/login/'
 
 LOGIN_REDIRECT_URL = '/home'
 
-STATIC_URL = '/static/'
+STATIC_URL = 'studyApp/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Define the directories where Django will search for static files.
