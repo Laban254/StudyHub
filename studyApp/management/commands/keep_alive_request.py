@@ -9,9 +9,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         urls = [
-            'https://studyhub-8yqw.onrender.com/', 
-            'https://elimuhub-7mea.onrender.com',
-            'https://ticketingsystem-hp75.onrender.com'
+            'https://studyhub-irj2.onrender.com/', 
+            'https://ticketingsystem-p5ew.onrender.com/'
         ]
         
         for url in urls:
