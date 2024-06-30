@@ -26,4 +26,4 @@ RUN python manage.py migrate
 RUN python3 manage.py crontab add
 
 # Start Gunicorn server
-CMD ["gunicorn", "--bind", "0.0.0.0:80", "myproject.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "studyHub.wsgi:application"]
