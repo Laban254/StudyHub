@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import logging
+from logging.handlers import RotatingFileHandler
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +28,7 @@ SECRET_KEY = 'django-insecure-l#h03mma*q*^ck7uq1of*fewb4d+*ee!5!p$@0cibl^zdvi4rv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.vercel.app', '.now.sh', '127.0.0.1', 'localhost', "0.0.0.0"]
 
 
 # Application definition
@@ -39,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_quill',
     'sweetify',
+    'whitenoise.runserver_nostatic',
+    'django_crontab',
     # 'schedule',
     'actstream',
     'widget_tweaks',
@@ -59,6 +64,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'studyApp.middleware.LogRequestsMiddleware',
 ]
 
 ROOT_URLCONF = 'studyHub.urls'
@@ -75,6 +82,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 "django.template.context_processors.request",
+                
             ],
         },
     },
@@ -156,9 +164,56 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATIC_URL = "studyApp/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# cron job
+CRONJOBS = [
+    ('*/30 * * * *', 'django.core.management.call_command', ['keep_alive_request']),  # Runs every 1 minute
+]
+
+
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/tmp/debug.log',  # Adjust the path and filename as needed
+            'maxBytes': 5 * 1024 * 1024,  # 5 MB in bytes
+            'backupCount': 5,  # Number of backup files to keep
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'studyApp': {  # Adjust to your app's name
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} {levelname} {name} {message}',
+            'style': '{',
+        },
+    },
+}
+
+
+

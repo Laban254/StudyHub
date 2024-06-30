@@ -8,6 +8,7 @@ Django==3.2.3
 django-activity-stream==2.0.0
 django-bower==5.2.0
 django-crispy-forms==1.14.0
+django-crontab==0.7.1
 django-on-heroku==1.1.2
 django-quill-editor==0.1.40
 django-scheduler==0.10.1
