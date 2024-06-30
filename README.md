@@ -12,6 +12,21 @@ StudyHub is a Django-powered platform designed to streamline study tasks. It off
 - **Dictionary Integration**: Look up word definitions using a dictionary API.
 - **Dynamic Calendar View**: Visualize homework deadlines and other important dates.
 
+## Models
+
+| Model         | Fields                                                      | Relationships                                   |
+|---------------|--------------------------------------------------------------|-------------------------------------------------|
+| **User**      | `username`: CharField<br>`email`: EmailField<br>`password`: CharField | Owns: Note, FavoriteNote, Homework, Task, SharedNote |
+| **Note**      | `title`: CharField<br>`description`: QuillField<br>`created_at`: DateTimeField<br>`updated_at`: DateTimeField<br>`reminder`: DateTimeField<br>`favorite`: BooleanField | Owned by: User<br>Shared by: SharedNote         |
+| **FavoriteNote** | -                                                      | Belongs to: User, Note                          |
+| **Todo**      | -                                                          | -                                               |
+| **Homework**  | `title`: CharField<br>`subject`: CharField<br>`description`: QuillField<br>`due`: DateField<br>`is_finished`: BooleanField<br>`created_at`: DateTimeField<br>`updated_at`: DateTimeField | Owned by: User                                  |
+| **Category**  | `name`: CharField                                           | Categorizes: Task                               |
+| **Tag**       | `name`: CharField                                           | Tags: Task                                      |
+| **Task**      | `title`: CharField<br>`description`: TextField<br>`created_at`: DateTimeField<br>`updated_at`: DateTimeField<br>`due_date`: DateField<br>`priority`: CharField<br>`completed`: BooleanField | Owned by: User<br>Categorized by: Category<br>Tagged by: Tag |
+| **SharedNote** | -                                                        | Note: ForeignKey(Note)<br>Shared with: ManyToManyField(User)<br>Shared by: ForeignKey(User)<br>Shared date: DateTimeField |
+
+
 ## Installation
 
 ### Prerequisites
