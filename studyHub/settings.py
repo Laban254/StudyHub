@@ -178,7 +178,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # cron job
 CRONJOBS = [
-    ('*/30 * * * *', 'django.core.management.call_command', ['keep_alive_request']),  # Runs every 1 minute
+    ('*/5 * * * *', 'django.core.management.call_command', ['keep_alive_request']),  # Runs every 1 minute
 ]
 
 
