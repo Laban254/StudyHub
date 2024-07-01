@@ -2,6 +2,13 @@
 
 StudyHub is a Django-powered platform designed to streamline study tasks. It offers note-taking, task management, and homework tracking features. Integrated with Google Books and a dictionary API, StudyHub enhances productivity with a user-friendly interface and dynamic calendar view, ensuring efficient study management.
 
+### Quick demo 
+
+
+https://github.com/Laban254/StudyHub/assets/64686919/b467de71-5e18-4ac6-a49f-c7c9bcac9a96
+
+
+
 ## Features
 
 - **User Registration and Authentication**: Secure registration and login system.
